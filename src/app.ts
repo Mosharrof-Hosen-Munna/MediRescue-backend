@@ -3,6 +3,7 @@ import cors from 'cors'
 import express, { Application, Request, Response } from 'express'
 import httpStatus from "http-status"
 import config from './app/config'
+import { AuthRoutes } from './app/module/auth/auth.route'
 
 const app: Application = express()
 
@@ -28,6 +29,8 @@ app.get('/', async (req: Request, res: Response) => {
         message: 'Welcome to MediRescue System Backend',
     })
 })
+
+app.use("/api/v1/auth",AuthRoutes)
 
 
 export default app
