@@ -4,8 +4,6 @@ import express, { Application, Request, Response } from 'express'
 import httpStatus from "http-status"
 import config from './app/config'
 
-
-
 const app: Application = express()
 
 app.use(

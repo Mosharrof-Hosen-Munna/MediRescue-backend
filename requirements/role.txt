@@ -1,0 +1,86 @@
+For your Emergency Ambulance Dispatch — V1, I recommend 3 main roles.
+
+1. User / Patient
+
+The person requesting an ambulance.
+
+Can:
+
+Register / login
+Create emergency request
+Enter patient information
+Select emergency/ambulance type
+Provide pickup address
+View their request status
+See assigned ambulance/driver information
+Cancel request when allowed
+View completed trips
+Pay the final bill
+View payment history
+
+Cannot:
+
+Assign an ambulance
+Manage drivers
+Manage other users
+Change ambulance availability
+Manage payments globally
+2. Dispatcher / Admin
+
+This is the core role for your V1 dispatch system.
+
+Can:
+
+View all emergency requests
+Review incoming requests
+Assign an available ambulance
+Assign a driver
+Change dispatch status
+View ambulance availability
+Manage ambulances
+Manage drivers
+Manage users
+Manage hospitals
+Manage ambulance/service pricing
+View payments
+Handle cancellations
+View reports/statistics
+
+
+
+
+
+USER
+  │
+  │ Create Emergency Request
+  ▼
+┌──────────────────────┐
+│ Emergency Request    │
+│                      │
+│ Patient Name         │
+│ Phone                │
+│ Emergency Type       │
+│ Pickup Address       │
+│ Ambulance Type       │
+│ Notes                │
+└──────────┬───────────┘
+           │
+           ▼
+       ADMIN PANEL
+           │
+           │ Reviews request
+           ▼
+    Available Ambulances
+           │
+           ▼
+   Admin assigns ambulance
+           │
+           ▼
+      Driver receives
+       assignment
+           │
+           ▼
+        Driver accepts
+           │
+           ▼
+       Service starts

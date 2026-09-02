@@ -1,0 +1,51 @@
+# Emergency Ambulance Dispatch System
+
+An **Emergency Ambulance Dispatch System** is a web-based platform that allows users to request ambulance services during emergencies. The system helps dispatchers manage emergency requests, assign available ambulances and drivers, and track the status of each service. After the service is completed, the user can make an online payment.
+
+## User Roles
+
+* **User/Patient:** Creates ambulance requests, views request status, and makes payments.
+* **Admin/Dispatcher:** Manages emergency requests, ambulances, drivers, assignments, and payments.
+* **Driver:** Receives assigned requests, accepts/rejects them, and updates the service status.
+
+## Main Flow
+
+**User → Emergency Request → Admin/Dispatcher → Assign Ambulance & Driver → Driver Accepts → Service → Completed → Payment**
+
+### Detailed Flow
+
+1. **User creates an emergency request**
+
+   * Provides patient information, emergency type, pickup address, and ambulance type.
+
+2. **Admin receives the request**
+
+   * Reviews the request from the admin dashboard.
+
+3. **Admin assigns an ambulance**
+
+   * Selects an available ambulance and driver.
+
+4. **Driver receives the assignment**
+
+   * Driver accepts or rejects the request.
+
+5. **Driver updates the service status**
+
+   * Accepted → En Route → Arrived → Patient Picked Up → At Hospital → Completed.
+
+6. **Service is completed**
+
+   * The system generates the final service charge.
+
+7. **User makes payment**
+
+   * User pays through the selected payment gateway.
+
+8. **Request is closed**
+
+   * Payment and dispatch records are stored for future reference.
+
+### V1 Scope
+
+The first version will **not include maps, GPS tracking, or Socket.IO real-time location tracking**. Ambulance assignment will be handled manually by the admin/dispatcher. These features can be added in a future version.

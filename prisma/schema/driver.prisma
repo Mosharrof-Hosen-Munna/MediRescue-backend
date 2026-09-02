@@ -1,0 +1,29 @@
+model Driver {
+  id                String       @id @default(uuid())
+  userId            String       @unique
+
+  firstName         String
+  lastName          String
+  phone             String
+  dateOfBirth       DateTime?
+  gender            Gender?
+  address           String?
+
+  employeeId        String       @unique
+  licenseNumber     String       @unique
+  licenseExpiryDate DateTime?
+
+  status            DriverStatus @default(OFF_DUTY)
+
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  // Relations
+  user              User         @relation(fields: [userId], references: [id])
+//   ambulance         Ambulance?
+//   dispatches        Dispatch[]
+
+  @@index([status])
+  @@index([phone])
+  @@map("drivers")
+}
