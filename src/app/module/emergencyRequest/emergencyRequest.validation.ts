@@ -33,3 +33,29 @@ export const createEmergencyRequestSchema = z.object({
         .trim()
         .optional(),
 });
+
+import { EmergencyRequestStatus } from "../../../generated/prisma/enums";
+
+export const getEmergencyRequestsQuerySchema = z.object({
+    page: z.coerce
+        .number()
+        .int()
+        .min(1)
+        .default(1),
+
+    limit: z.coerce
+        .number()
+        .int()
+        .min(1)
+        .max(100)
+        .default(10),
+
+    status: z
+        .nativeEnum(EmergencyRequestStatus)
+        .optional(),
+
+    search: z
+        .string()
+        .trim()
+        .optional(),
+});

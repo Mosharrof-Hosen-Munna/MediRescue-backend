@@ -6,3 +6,10 @@ export interface ICreateEmergencyRequestPayload {
     patientCondition?: string;
     additionalNotes?: string;
 }
+
+export interface IGetEmergencyRequestsQuery {
+    page?: string;
+    limit?: string;
+    status?: string;
+    search?: string;
+}

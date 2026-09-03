@@ -23,7 +23,24 @@ const createEmergencyRequest = catchAsync(
         });
     }
 );
+const getAllEmergencyRequests = catchAsync(
+    async (req: Request, res: Response) => {
+        const result =
+            await emergencyRequestService.getAllEmergencyRequests(
+                req.query
+            );
+
+        sendResponse(res, {
+            statusCode: httpStatus.OK,
+            success: true,
+            message: "Emergency requests retrieved successfully",
+            data: result.data,
+            meta: result.meta,
+        });
+    }
+);
 
 export const emergencyRequestController = {
     createEmergencyRequest,
+    getAllEmergencyRequests
 };
