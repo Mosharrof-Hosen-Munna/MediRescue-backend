@@ -1,0 +1,84 @@
+Auth module
+POST   /api/v1/auth/register/patient
+POST   /api/v1/auth/login
+POST   /api/v1/auth/refresh-token
+POST   /api/v1/auth/logout
+POST   /api/v1/auth/change-password
+POST   /api/v1/auth/forgot-password
+POST   /api/v1/auth/reset-password
+POST   /api/v1/auth/verify-email
+
+User module
+GET    /api/v1/users/me
+PATCH  /api/v1/users/me
+GET    /api/v1/users
+GET    /api/v1/users/:id
+PATCH  /api/v1/users/:id/status
+DELETE /api/v1/users/:id
+
+Patient module
+GET    /api/v1/patients/me
+PATCH  /api/v1/patients/me
+GET    /api/v1/patients/:id
+GET    /api/v1/patients/:id/emergency-requests
+
+Driver module
+GET    /api/v1/drivers
+POST   /api/v1/drivers
+GET    /api/v1/drivers/:id
+PATCH  /api/v1/drivers/:id
+PATCH  /api/v1/drivers/:id/status
+DELETE /api/v1/drivers/:id
+GET    /api/v1/drivers/:id/dispatches
+GET    /api/v1/drivers/me
+PATCH  /api/v1/drivers/me
+
+Ambulance module
+GET    /api/v1/ambulances
+POST   /api/v1/ambulances
+GET    /api/v1/ambulances/:id
+PATCH  /api/v1/ambulances/:id
+DELETE /api/v1/ambulances/:id
+PATCH  /api/v1/ambulances/:id/status
+PATCH  /api/v1/ambulances/:id/driver
+
+Ambulance type module
+GET    /api/v1/ambulance-types
+POST   /api/v1/ambulance-types
+GET    /api/v1/ambulance-types/:id
+PATCH  /api/v1/ambulance-types/:id
+DELETE /api/v1/ambulance-types/:id
+
+Service Type
+GET    /api/v1/service-types
+POST   /api/v1/service-types
+GET    /api/v1/service-types/:id
+PATCH  /api/v1/service-types/:id
+DELETE /api/v1/service-types/:id
+
+Emergency Request module
+POST   /api/v1/emergency-requests
+GET    /api/v1/emergency-requests
+GET    /api/v1/emergency-requests/:id
+PATCH  /api/v1/emergency-requests/:id
+PATCH  /api/v1/emergency-requests/:id/cancel
+GET    /api/v1/emergency-requests/my-requests
+
+GET /api/v1/emergency-requests?status=PENDING
+GET /api/v1/emergency-requests?status=DISPATCHED
+GET /api/v1/emergency-requests?status=COMPLETED
+
+
+Dispatch module
+POST   /api/v1/dispatches
+GET    /api/v1/dispatches
+GET    /api/v1/dispatches/:id
+PATCH  /api/v1/dispatches/:id
+
+Driver actions:
+POST   /api/v1/dispatches/:id/assign
+POST   /api/v1/dispatches/:id/accept
+status update POST   /api/v1/dispatches/:id/reject
+
+Driver's dispatches:
+GET /api/v1/dispatches/my-dispatches
