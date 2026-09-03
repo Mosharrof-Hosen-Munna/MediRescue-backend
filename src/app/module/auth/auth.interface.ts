@@ -1,4 +1,4 @@
-import { Gender } from "../../../generated/prisma/enums"
+import { Gender, Role } from "../../../generated/prisma/enums"
 
 export interface ILoginUserPayload {
     email: string
@@ -13,8 +13,17 @@ export interface IRegisterPatientPayload {
     password: string
 }
 
+export interface IRequestUser {
+    userId: string
+    email: string
+    firstName?: string
+    lastName?: string
+    role: Role
+}
+
 export interface IRegisterDriverPayload {
-    name: string
+    firstName: string
+    lastName: string
     email: string
     password: string
     phone: string
