@@ -51,14 +51,14 @@ DELETE /api/v1/ambulance-types/:id
 
 Service Type
 GET    /api/v1/service-types
-POST   /api/v1/service-types
+POST   /api/v1/service-types   //done
 GET    /api/v1/service-types/:id
 PATCH  /api/v1/service-types/:id
 DELETE /api/v1/service-types/:id
 
 Emergency Request module
-POST   /api/v1/emergency-requests
-GET    /api/v1/emergency-requests
+POST   /api/v1/emergency-requests  //done
+GET    /api/v1/emergency-requests   //done
 GET    /api/v1/emergency-requests/:id
 PATCH  /api/v1/emergency-requests/:id
 PATCH  /api/v1/emergency-requests/:id/cancel
