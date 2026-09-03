@@ -20,8 +20,8 @@ model Driver {
 
   // Relations
   user              User         @relation(fields: [userId], references: [id])
-//   ambulance         Ambulance?
-//   dispatches        Dispatch[]
+  ambulance         Ambulance?
+  dispatches        Dispatch[]
 
   @@index([status])
   @@index([phone])

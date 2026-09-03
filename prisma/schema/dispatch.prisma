@@ -1,0 +1,40 @@
+model Dispatch {
+    id String @id @default(uuid())
+
+    emergencyRequestId String  @unique
+    ambulanceId        String
+    driverId           String
+    // hospitalId         String?
+
+    status DispatchStatus @default(ASSIGNED)
+
+    assignedAt        DateTime  @default(now())
+    acceptedAt        DateTime?
+    arrivedAt         DateTime?
+    pickedUpAt        DateTime?
+    hospitalArrivedAt DateTime?
+    completedAt       DateTime?
+    cancelledAt       DateTime?
+
+    cancellationReason String?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    // Relations
+    emergencyRequest   EmergencyRequest @relation(fields: [emergencyRequestId],references: [id])
+
+    ambulance          Ambulance      @relation(fields: [ambulanceId],references: [id])
+
+    driver             Driver      @relation(fields: [driverId],references: [id])
+
+    // hospital           Hospital?      @relation(fields: [hospitalId],references: [id])
+
+    //   payment            Payment?
+
+    @@index([ambulanceId])
+    @@index([driverId])
+    // @@index([hospitalId])
+    @@index([status])
+    @@map("dispatches")
+}

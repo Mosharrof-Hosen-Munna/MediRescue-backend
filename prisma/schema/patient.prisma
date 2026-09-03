@@ -19,7 +19,7 @@ model Patient {
 
   // Relations
   user                  User      @relation(fields: [userId], references: [id])
-//   emergencyRequests     EmergencyRequest[]
+  emergencyRequests     EmergencyRequest[]
 //   reviews               Review[]
 
   @@index([phone])

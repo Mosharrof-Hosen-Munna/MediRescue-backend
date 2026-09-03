@@ -1,0 +1,16 @@
+model AmbulanceType {
+  id          String      @id @default(uuid())
+  name        String      @unique
+  description String?
+  baseFare    Decimal     @db.Decimal(10, 2)
+  isActive    Boolean     @default(true)
+
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+ emergencyRequests          EmergencyRequest[]         
+  // Relations
+  ambulances  Ambulance[]
+
+  @@index([isActive])
+  @@map("ambulance_types")
+}
