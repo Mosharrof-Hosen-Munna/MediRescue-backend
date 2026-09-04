@@ -107,7 +107,7 @@ const getAllAmbulances = async (
         ...(query.status && {
             status: query.status as any,
         }),
-
+        // isDeleted:false,
         ...(query.typeId && {
             typeId: query.typeId,
         }),

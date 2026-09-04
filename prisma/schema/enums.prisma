@@ -63,3 +63,15 @@ enum EmergencyRequestStatus {
   REJECTED
   NO_AMBULANCE_AVAILABLE
 }
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  SOFT_DELETE
+  STATUS_CHANGE
+  ROLE_CHANGE
+  LOGIN
+  LOGOUT
+  PASSWORD_CHANGE
+}

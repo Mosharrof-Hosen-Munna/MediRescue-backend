@@ -18,6 +18,7 @@ model User {
   // Relations
   patient             Patient?
   driver              Driver?
+  auditLogs           AuditLog[]
 
   @@index([role])
   @@index([status])

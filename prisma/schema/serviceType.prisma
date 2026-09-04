@@ -6,6 +6,9 @@ model ServiceType {
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  
+  isDeleted      Boolean         @default(false)
+  deletedAt      DateTime?
 
   // Relations
   emergencyRequests EmergencyRequest[]

@@ -12,6 +12,9 @@ model Ambulance {
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
 
+  isDeleted      Boolean         @default(false)
+  deletedAt      DateTime?
+
   // Relations
   driver          Driver?         @relation(fields: [driverId], references: [id])
   typeId          String
