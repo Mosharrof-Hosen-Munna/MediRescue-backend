@@ -23,8 +23,8 @@ GET    /api/v1/patients/:id
 GET    /api/v1/patients/:id/emergency-requests
 
 Driver module
-GET    /api/v1/drivers
-POST   /api/v1/drivers
+GET    /api/v1/drivers //done
+POST   /api/v1/drivers  //done
 GET    /api/v1/drivers/:id
 PATCH  /api/v1/drivers/:id
 PATCH  /api/v1/drivers/:id/status
@@ -34,8 +34,8 @@ GET    /api/v1/drivers/me
 PATCH  /api/v1/drivers/me
 
 Ambulance module
-GET    /api/v1/ambulances
-POST   /api/v1/ambulances
+GET    /api/v1/ambulances  //done
+POST   /api/v1/ambulances  //done
 GET    /api/v1/ambulances/:id
 PATCH  /api/v1/ambulances/:id
 DELETE /api/v1/ambulances/:id

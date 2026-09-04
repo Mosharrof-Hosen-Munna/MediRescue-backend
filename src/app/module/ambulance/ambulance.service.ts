@@ -1,5 +1,5 @@
 import { prisma } from "../../lib/prisma";
-import { ICreateAmbulancePayload } from "./ambulance.interface";
+import { ICreateAmbulancePayload, IGetAmbulancesQuery } from "./ambulance.interface";
 
 const createAmbulance = async (
     payload: ICreateAmbulancePayload
@@ -96,6 +96,99 @@ const createAmbulance = async (
     return ambulance;
 };
 
+const getAllAmbulances = async (
+    query: IGetAmbulancesQuery
+) => {
+    const page = Number(query.page) || 1;
+    const limit = Number(query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const where = {
+        ...(query.status && {
+            status: query.status as any,
+        }),
+
+        ...(query.typeId && {
+            typeId: query.typeId,
+        }),
+
+        ...(query.search && {
+            OR: [
+                {
+                    registrationNo: {
+                        contains: query.search,
+                        mode: "insensitive" as const,
+                    },
+                },
+                {
+                    model: {
+                        contains: query.search,
+                        mode: "insensitive" as const,
+                    },
+                },
+                {
+                    manufacturer: {
+                        contains: query.search,
+                        mode: "insensitive" as const,
+                    },
+                },
+            ],
+        }),
+    };
+
+    const [ambulances, total] = await prisma.$transaction([
+        prisma.ambulance.findMany({
+            where,
+            skip,
+            take: limit,
+
+            orderBy: {
+                createdAt: "desc",
+            },
+
+            include: {
+                type: {
+                    select: {
+                        id: true,
+                        name: true,
+                        description: true,
+                        baseFare: true,
+                        isActive: true,
+                    },
+                },
+
+                driver: {
+                    select: {
+                        id: true,
+                        firstName: true,
+                        lastName: true,
+                        phone: true,
+                        employeeId: true,
+                        licenseNumber: true,
+                        status: true,
+                    },
+                },
+            },
+        }),
+
+        prisma.ambulance.count({
+            where,
+        }),
+    ]);
+
+    return {
+        data: ambulances,
+
+        meta: {
+            page,
+            limit,
+            total,
+            totalPages: Math.ceil(total / limit),
+        },
+    };
+};
+
 export const ambulanceService = {
     createAmbulance,
+    getAllAmbulances
 };

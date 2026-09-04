@@ -7,3 +7,11 @@ export interface ICreateAmbulancePayload {
     typeId: string;
     driverId?: string;
 }
+
+export interface IGetAmbulancesQuery {
+    page?: string;
+    limit?: string;
+    status?: string;
+    typeId?: string;
+    search?: string;
+}

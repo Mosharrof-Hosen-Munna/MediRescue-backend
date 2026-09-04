@@ -19,6 +19,24 @@ const createAmbulance = catchAsync(
     }
 );
 
+const getAllAmbulances = catchAsync(
+    async (req: Request, res: Response) => {
+        const result =
+            await ambulanceService.getAllAmbulances(
+                req.query
+            );
+
+        sendResponse(res, {
+            statusCode: httpStatus.OK,
+            success: true,
+            message: "Ambulances retrieved successfully",
+            data: result.data,
+            meta: result.meta,
+        });
+    }
+);
+
 export const ambulanceController = {
     createAmbulance,
+    getAllAmbulances,
 };
