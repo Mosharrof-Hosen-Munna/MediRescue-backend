@@ -59,3 +59,7 @@ export const getEmergencyRequestsQuerySchema = z.object({
         .trim()
         .optional(),
 });
+
+export const getEmergencyRequestByIdSchema = z.object({
+    id: z.string().uuid("Invalid emergency request ID"),
+});

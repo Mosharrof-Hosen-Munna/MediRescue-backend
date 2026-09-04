@@ -13,3 +13,7 @@ export interface IGetEmergencyRequestsQuery {
     status?: string;
     search?: string;
 }
+
+export interface IGetEmergencyRequestByIdParams {
+    id: string;
+}

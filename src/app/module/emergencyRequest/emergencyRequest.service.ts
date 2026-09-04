@@ -1,5 +1,6 @@
+import { Role } from './../../../generated/prisma/enums';
 import { prisma } from "../../lib/prisma";
-import { ICreateEmergencyRequestPayload } from "./emergencyRequest.interface";
+import { ICreateEmergencyRequestPayload, IGetEmergencyRequestByIdParams } from "./emergencyRequest.interface";
 import { IGetEmergencyRequestsQuery } from "./emergencyRequest.interface";
 
 const createEmergencyRequest = async (
@@ -220,7 +221,87 @@ const getAllEmergencyRequests = async (query: IGetEmergencyRequestsQuery) => {
   };
 };
 
+const getEmergencyRequestById = async (
+    id: string,
+    userId: string,
+    userRole: string
+) => {
+    const emergencyRequest =
+        await prisma.emergencyRequest.findUnique({
+            where: {
+                id,
+            },
+            include: {
+                patient: {
+                    select: {
+                        id: true,
+                        firstName: true,
+                        lastName: true,
+                        phone: true,
+                        dateOfBirth: true,
+                        gender: true,
+                        bloodGroup: true,
+                        emergencyContactName: true,
+                        emergencyContactPhone: true,
+                        userId:true
+                    },
+                },
+                serviceType: {
+                    select: {
+                        id: true,
+                        name: true,
+                        description: true,
+                    },
+                },
+                ambulanceType: {
+                    select: {
+                        id: true,
+                        name: true,
+                        description: true,
+                        baseFare: true,
+                    },
+                },
+                dispatch: {
+                    include: {
+                        ambulance: {
+                            include: {
+                                type: true,
+                            },
+                        },
+                        driver: {
+                            select: {
+                                id: true,
+                                firstName: true,
+                                lastName: true,
+                                phone: true,
+                                employeeId: true,
+                                licenseNumber: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+
+    if (!emergencyRequest) {
+        throw new Error("Emergency request not found");
+    }
+
+    if (
+        userRole === "PATIENT" &&
+        emergencyRequest.patient.userId !== userId
+    ) {
+        throw new Error(
+            "You are not allowed to view this emergency request"
+        );
+    }
+
+    return emergencyRequest;
+};
+
+
 export const emergencyRequestService = {
   getAllEmergencyRequests,
   createEmergencyRequest,
+  getEmergencyRequestById
 };
