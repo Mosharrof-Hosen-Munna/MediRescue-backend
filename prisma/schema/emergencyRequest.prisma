@@ -34,7 +34,6 @@ model EmergencyRequest {
   @@index([patientId])
   @@index([serviceTypeId])
   @@index([ambulanceTypeId])
-  // @@index([addressId])
   @@index([status])
   @@index([requestedAt])
   @@map("emergency_requests")

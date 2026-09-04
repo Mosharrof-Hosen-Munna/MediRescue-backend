@@ -1,12 +1,18 @@
 import { Router } from "express";
 import { serviceTypeController } from "./serviceType.controller";
-import { createServiceTypeSchema } from "./serviceType.validation";
+import { createServiceTypeSchema, getServiceTypesQuerySchema } from "./serviceType.validation";
 import { auth } from "../../middleware/authCheck";
 import { validateRequest } from "../../middleware/validateRequest";
 import { Role } from "../../../generated/prisma/enums";
 
 const router = Router();
 
+router.get(
+    "/",
+    auth("PATIENT", "ADMIN"),
+    validateRequest(getServiceTypesQuerySchema),
+    serviceTypeController.getAllServiceTypes
+);
 router.post(
     "/",
     auth(Role.ADMIN),
