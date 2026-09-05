@@ -51,8 +51,45 @@ const getAmbulanceById = catchAsync(
     }
 );
 
+const updateAmbulance = catchAsync(
+    async (req: Request, res: Response) => {
+        const result =
+            await ambulanceService.updateAmbulance(
+                req.params.id as string,
+                req.body,
+                req.user.userId
+            );
+
+        sendResponse(res, {
+            statusCode: httpStatus.OK,
+            success: true,
+            message: "Ambulance updated successfully",
+            data: result,
+        });
+    }
+);
+
+const deleteAmbulance = catchAsync(
+    async (req: Request, res: Response) => {
+        const result =
+            await ambulanceService.deleteAmbulance(
+                req.params.id as string,
+                req.user.userId
+            );
+
+        sendResponse(res, {
+            statusCode: httpStatus.OK,
+            success: true,
+            message: "Ambulance deleted successfully",
+            data: result,
+        });
+    }
+);
+
 export const ambulanceController = {
     createAmbulance,
     getAllAmbulances,
-    getAmbulanceById
+    getAmbulanceById,
+    updateAmbulance,
+    deleteAmbulance
 };

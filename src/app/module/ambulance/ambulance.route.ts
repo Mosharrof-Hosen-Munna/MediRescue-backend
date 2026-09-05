@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { ambulanceController } from "./ambulance.controller";
-import { createAmbulanceSchema, getAmbulanceByIdSchema, getAmbulancesQuerySchema } from "./ambulance.validation";
+import { createAmbulanceSchema, deleteAmbulanceSchema, getAmbulanceByIdSchema, getAmbulancesQuerySchema, updateAmbulanceSchema } from "./ambulance.validation";
 import { Role } from "../../../generated/prisma/enums";
 import { auth } from "../../middleware/authCheck";
 import { validateRequest } from "../../middleware/validateRequest";
@@ -25,6 +25,20 @@ router.get(
     auth(Role.ADMIN),
     validateRequest(getAmbulanceByIdSchema),
     ambulanceController.getAmbulanceById
+);
+
+router.patch(
+    "/:id",
+    auth(Role.ADMIN),
+    validateRequest(updateAmbulanceSchema),
+    ambulanceController.updateAmbulance
+);
+
+router.delete(
+    "/:id",
+    auth(Role.ADMIN),
+    validateRequest(deleteAmbulanceSchema),
+    ambulanceController.deleteAmbulance
 );
 
 export const ambulanceRouter = router;

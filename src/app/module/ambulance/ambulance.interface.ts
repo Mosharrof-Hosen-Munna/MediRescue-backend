@@ -19,3 +19,16 @@ export interface IGetAmbulancesQuery {
 export interface IGetAmbulanceByIdParams {
     id: string;
 }
+
+export interface IUpdateAmbulancePayload {
+    registrationNo?: string;
+    model?: string;
+    manufacturer?: string;
+    year?: number;
+    capacity?: number;
+    typeId?: string;
+}
+
+export interface IDeleteAmbulanceParams {
+    id: string;
+}
