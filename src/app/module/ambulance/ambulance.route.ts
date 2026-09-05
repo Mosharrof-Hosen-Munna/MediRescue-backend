@@ -33,6 +33,12 @@ router.patch(
     validateRequest(updateAmbulanceSchema),
     ambulanceController.updateAmbulance
 );
+router.patch(
+    "/:id/status",
+    auth(Role.ADMIN),
+    validateRequest(updateAmbulanceSchema),
+    ambulanceController.updateAmbulance
+);
 
 router.delete(
     "/:id",

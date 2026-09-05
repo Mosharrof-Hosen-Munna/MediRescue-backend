@@ -32,3 +32,9 @@ export interface IUpdateAmbulancePayload {
 export interface IDeleteAmbulanceParams {
     id: string;
 }
+
+export interface IUpdateAmbulanceStatusPayload{
+    userId:string;
+    status: string;
+    ambulanceId:string
+}

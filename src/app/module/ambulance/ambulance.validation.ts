@@ -133,3 +133,11 @@ export const deleteAmbulanceSchema = z.object({
         id: z.string().uuid("Invalid ambulance ID"),
     }),
 });
+export const updateAmbulanceStatusSchema = z.object({
+    params: z.object({
+        id: z.string().uuid("Invalid ambulance ID"),
+    }),
+    body:z.object({
+        status: z.nativeEnum(AmbulanceStatus)
+    })
+});

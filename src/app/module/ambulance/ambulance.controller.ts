@@ -85,11 +85,29 @@ const deleteAmbulance = catchAsync(
         });
     }
 );
+const updateAmbulanceStatus = catchAsync(
+    async (req: Request, res: Response) => {
+        const result =
+            await ambulanceService.updateAmbulanceStatus(
+                req.user.userId,
+                req.params.id as string,
+                req.body.status
+            );
+
+        sendResponse(res, {
+            statusCode: httpStatus.OK,
+            success: true,
+            message: "Ambulance Updated successfully",
+            data: result,
+        });
+    }
+);
 
 export const ambulanceController = {
     createAmbulance,
     getAllAmbulances,
     getAmbulanceById,
     updateAmbulance,
-    deleteAmbulance
+    deleteAmbulance,
+    updateAmbulanceStatus
 };

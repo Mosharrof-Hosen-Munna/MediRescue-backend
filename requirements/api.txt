@@ -38,7 +38,7 @@ GET    /api/v1/ambulances  //done
 POST   /api/v1/ambulances  //done
 GET    /api/v1/ambulances/:id //done
 PATCH  /api/v1/ambulances/:id  //done
-DELETE /api/v1/ambulances/:id
+DELETE /api/v1/ambulances/:id  //done
 PATCH  /api/v1/ambulances/:id/status
 PATCH  /api/v1/ambulances/:id/driver
 

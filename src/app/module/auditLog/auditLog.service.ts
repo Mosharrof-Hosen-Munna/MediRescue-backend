@@ -1,10 +1,11 @@
-import { prisma } from "../../lib/prisma";
+import { Prisma } from "../../../generated/prisma/client";
 import { ICreateAuditLogPayload } from "./auditLog.interface";
 
 const createAuditLog = async (
+    tx: Prisma.TransactionClient,
     payload: ICreateAuditLogPayload
 ) => {
-    const auditLog = await prisma.auditLog.create({
+    return tx.auditLog.create({
         data: {
             userId: payload.userId,
             action: payload.action,
@@ -17,8 +18,6 @@ const createAuditLog = async (
             userAgent: payload.userAgent,
         },
     });
-
-    return auditLog;
 };
 
 export const auditLogService = {
