@@ -21,6 +21,23 @@ const getAllDrivers = catchAsync(
     }
 );
 
+const createDriver = catchAsync(
+    async (req: Request, res: Response) => {
+        const result = await driverService.createDriver(
+            req.body,
+            req.user.userId 
+        );
+
+        sendResponse(res, {
+            statusCode: httpStatus.CREATED,
+            success: true,
+            message: "Driver created successfully",
+            data: result,
+        });
+    }
+);
+
 export const driverController = {
     getAllDrivers,
+    createDriver
 };

@@ -26,3 +26,68 @@ export const getDriversQuerySchema = z.object({
         .optional(),
    })
 });
+
+export const createDriverSchema = z.object({
+    body: z.object({
+        firstName: z
+            .string()
+            .min(2, "First name must be at least 2 characters")
+            .max(50, "First name must not exceed 50 characters")
+            .trim(),
+
+        lastName: z
+            .string()
+            .min(2, "Last name must be at least 2 characters")
+            .max(50, "Last name must not exceed 50 characters")
+            .trim(),
+
+        phone: z
+            .string()
+            .min(11, "Phone number must be at least 11 characters")
+            .max(15, "Phone number must not exceed 15 characters")
+            .trim(),
+
+        email: z
+            .string()
+            .email("Invalid email address")
+            .trim()
+            .toLowerCase(),
+
+        password: z
+            .string()
+            .min(8, "Password must be at least 8 characters")
+            .max(100, "Password must not exceed 100 characters"),
+
+        dateOfBirth: z
+            .string()
+            .datetime("Invalid date of birth")
+            .optional(),
+
+        gender: z
+            .enum(["MALE", "FEMALE", "OTHER"])
+            .optional(),
+
+        address: z
+            .string()
+            .max(500, "Address must not exceed 500 characters")
+            .trim()
+            .optional(),
+
+        employeeId: z
+            .string()
+            .min(2, "Employee ID must be at least 2 characters")
+            .max(50, "Employee ID must not exceed 50 characters")
+            .trim(),
+
+        licenseNumber: z
+            .string()
+            .min(3, "License number must be at least 3 characters")
+            .max(50, "License number must not exceed 50 characters")
+            .trim(),
+
+        licenseExpiryDate: z
+            .string()
+            .datetime("Invalid license expiry date")
+            .optional(),
+    }),
+});
