@@ -243,8 +243,53 @@ const createDriver = async (
     return result;
 };
 
+const getDriverById = async (
+    id: string,
+    userId: string,
+    userRole: string
+) => {
+    const driver = await prisma.driver.findUnique({
+        where: {
+            id,
+        },
+        include: {
+            user: {
+                select: {
+                    id: true,
+                    email: true,
+                    role: true,
+                    status: true,
+                    emailVerified: true,
+                    needPasswordChange: true,
+                    createdAt: true,
+                },
+            },
+            ambulance: {
+                include: {
+                    type: true,
+                },
+            },
+        },
+    });
+
+    if (!driver) {
+        throw new Error("Driver not found");
+    }
+
+    if (
+        userRole === "DRIVER" &&
+        driver.userId !== userId
+    ) {
+        throw new Error(
+            "You are not allowed to view this driver"
+        );
+    }
+
+    return driver;
+};
 
 export const driverService = {
     getAllDrivers,
-    createDriver
+    createDriver,
+    getDriverById
 };

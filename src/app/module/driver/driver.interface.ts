@@ -20,3 +20,7 @@ export interface ICreateDriverPayload {
     licenseNumber: string;
     licenseExpiryDate?: string;
 }
+
+export interface IGetDriverByIdParams {
+    id: string;
+}

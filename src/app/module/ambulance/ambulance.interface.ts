@@ -15,3 +15,7 @@ export interface IGetAmbulancesQuery {
     typeId?: string;
     search?: string;
 }
+
+export interface IGetAmbulanceByIdParams {
+    id: string;
+}

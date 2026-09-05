@@ -36,7 +36,23 @@ const getAllAmbulances = catchAsync(
     }
 );
 
+const getAmbulanceById = catchAsync(
+    async (req: Request, res: Response) => {
+        const result = await ambulanceService.getAmbulanceById(
+            req.params.id as string
+        );
+
+        sendResponse(res, {
+            statusCode: httpStatus.OK,
+            success: true,
+            message: "Ambulance retrieved successfully",
+            data: result,
+        });
+    }
+);
+
 export const ambulanceController = {
     createAmbulance,
     getAllAmbulances,
+    getAmbulanceById
 };

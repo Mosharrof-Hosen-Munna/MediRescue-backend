@@ -25,7 +25,7 @@ GET    /api/v1/patients/:id/emergency-requests
 Driver module
 GET    /api/v1/drivers //done
 POST   /api/v1/drivers  //done
-GET    /api/v1/drivers/:id
+GET    /api/v1/drivers/:id  //done
 PATCH  /api/v1/drivers/:id
 PATCH  /api/v1/drivers/:id/status
 DELETE /api/v1/drivers/:id

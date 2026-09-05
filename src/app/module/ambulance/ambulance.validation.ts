@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { AmbulanceStatus } from "../../../generated/prisma/enums";
 
 export const createAmbulanceSchema = z.object({
     body:z.object({
@@ -44,8 +45,6 @@ export const createAmbulanceSchema = z.object({
     })
 });
 
-import { AmbulanceStatus } from "../../../generated/prisma/enums";
-
 export const getAmbulancesQuerySchema = z.object({
     query:z.object({
         page: z.coerce
@@ -75,4 +74,10 @@ export const getAmbulancesQuerySchema = z.object({
         .trim()
         .optional(),
     })
+});
+
+export const getAmbulanceByIdSchema = z.object({
+    params: z.object({
+        id: z.string().uuid("Invalid ambulance ID"),
+    }),
 });

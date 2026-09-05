@@ -37,7 +37,25 @@ const createDriver = catchAsync(
     }
 );
 
+const getDriverById = catchAsync(
+    async (req: Request, res: Response) => {
+        const result = await driverService.getDriverById(
+            req.params.id as string,
+            req.user.userId,
+            req.user.role
+        );
+
+        sendResponse(res, {
+            statusCode: httpStatus.OK,
+            success: true,
+            message: "Driver retrieved successfully",
+            data: result,
+        });
+    }
+);
+
 export const driverController = {
     getAllDrivers,
-    createDriver
+    createDriver,
+    getDriverById
 };

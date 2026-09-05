@@ -188,7 +188,45 @@ const getAllAmbulances = async (
     };
 };
 
+const getAmbulanceById = async (id: string) => {
+    const ambulance = await prisma.ambulance.findUnique({
+        where: {
+            id,
+        },
+        include: {
+            type: {
+                select: {
+                    id: true,
+                    name: true,
+                    description: true,
+                    baseFare: true,
+                    isActive: true,
+                },
+            },
+            driver: {
+                select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    phone: true,
+                    employeeId: true,
+                    licenseNumber: true,
+                    licenseExpiryDate: true,
+                    status: true,
+                },
+            },
+        },
+    });
+
+    if (!ambulance) {
+        throw new Error("Ambulance not found");
+    }
+
+    return ambulance;
+};
+
 export const ambulanceService = {
     createAmbulance,
-    getAllAmbulances
+    getAllAmbulances,
+    getAmbulanceById
 };

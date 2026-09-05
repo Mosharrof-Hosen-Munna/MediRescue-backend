@@ -91,3 +91,9 @@ export const createDriverSchema = z.object({
             .optional(),
     }),
 });
+
+export const getDriverByIdSchema = z.object({
+    params: z.object({
+        id: z.string().uuid("Invalid driver ID"),
+    }),
+});
