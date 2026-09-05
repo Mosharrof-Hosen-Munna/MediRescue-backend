@@ -4,7 +4,6 @@ import httpStatus from "http-status";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import { emergencyRequestService } from "./emergencyRequest.service";
-import { JwtPayload } from "jsonwebtoken";
 
 const createEmergencyRequest = catchAsync(
   async (req: Request, res: Response) => {

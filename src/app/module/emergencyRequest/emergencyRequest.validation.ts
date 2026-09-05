@@ -37,7 +37,8 @@ export const createEmergencyRequestSchema = z.object({
 import { EmergencyRequestStatus } from "../../../generated/prisma/enums";
 
 export const getEmergencyRequestsQuerySchema = z.object({
-    page: z.coerce
+   query:z.object({
+     page: z.coerce
         .number()
         .int()
         .min(1)
@@ -58,8 +59,11 @@ export const getEmergencyRequestsQuerySchema = z.object({
         .string()
         .trim()
         .optional(),
+   })
 });
 
 export const getEmergencyRequestByIdSchema = z.object({
-    id: z.string().uuid("Invalid emergency request ID"),
+    params: z.object({
+        id: z.string().uuid("Invalid emergency request ID"),
+    }),
 });

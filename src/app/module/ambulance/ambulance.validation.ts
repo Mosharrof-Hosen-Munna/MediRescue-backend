@@ -1,7 +1,8 @@
 import { z } from "zod";
 
 export const createAmbulanceSchema = z.object({
-    registrationNo: z
+    body:z.object({
+        registrationNo: z
         .string()
         .min(3, "Registration number must be at least 3 characters")
         .max(30, "Registration number must not exceed 30 characters")
@@ -40,12 +41,14 @@ export const createAmbulanceSchema = z.object({
         .string()
         .uuid("Invalid driver ID")
         .optional(),
+    })
 });
 
 import { AmbulanceStatus } from "../../../generated/prisma/enums";
 
 export const getAmbulancesQuerySchema = z.object({
-    page: z.coerce
+    query:z.object({
+        page: z.coerce
         .number()
         .int()
         .min(1)
@@ -71,4 +74,5 @@ export const getAmbulancesQuerySchema = z.object({
         .string()
         .trim()
         .optional(),
+    })
 });

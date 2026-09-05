@@ -1,7 +1,8 @@
 import { z } from "zod";
 
 export const createAmbulanceTypeSchema = z.object({
-    name: z
+   body:z.object({
+     name: z
         .string()
         .min(2, "Ambulance type name must be at least 2 characters")
         .max(100, "Ambulance type name must not exceed 100 characters")
@@ -16,4 +17,5 @@ export const createAmbulanceTypeSchema = z.object({
     baseFare: z
         .number()
         .positive("Base fare must be greater than 0"),
+   })
 });

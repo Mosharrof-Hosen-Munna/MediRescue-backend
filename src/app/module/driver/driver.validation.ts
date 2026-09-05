@@ -2,7 +2,8 @@ import { z } from "zod";
 import { DriverStatus } from "../../../generated/prisma/enums";
 
 export const getDriversQuerySchema = z.object({
-    page: z.coerce
+   query:z.object({
+     page: z.coerce
         .number()
         .int()
         .min(1)
@@ -23,4 +24,5 @@ export const getDriversQuerySchema = z.object({
         .string()
         .trim()
         .optional(),
+   })
 });
