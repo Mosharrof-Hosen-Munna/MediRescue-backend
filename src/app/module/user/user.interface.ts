@@ -1,3 +1,5 @@
+import { UserStatus } from "../../../generated/prisma/enums";
+
 export interface IUpdateMyProfilePayload {
     email?: string;
 }
@@ -8,4 +10,12 @@ export interface IGetUsersQuery {
     role?: string;
     status?: string;
     search?: string;
+}
+
+export interface IUpdateUserStatusPayload {
+    status: UserStatus;
+}
+
+export interface IDeleteUserParams {
+    id: string;
 }

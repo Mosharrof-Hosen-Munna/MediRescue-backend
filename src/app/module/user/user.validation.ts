@@ -4,6 +4,8 @@ import {
     UserStatus,
 } from "../../../generated/prisma/enums";
 
+
+
 export const updateMyProfileSchema = z.object({
     body: z.object({
         email: z
@@ -38,5 +40,28 @@ export const getUsersQuerySchema = z.object({
             .string()
             .trim()
             .optional(),
+    }),
+});
+
+export const getUserByIdSchema = z.object({
+    params: z.object({
+        id: z.string().uuid("Invalid user ID"),
+    }),
+});
+
+export const deleteUserSchema = z.object({
+    params: z.object({
+        id: z.string().uuid("Invalid user ID"),
+    }),
+});
+
+
+export const updateUserStatusSchema = z.object({
+    params: z.object({
+        id: z.string().uuid("Invalid user ID"),
+    }),
+
+    body: z.object({
+        status: z.nativeEnum(UserStatus),
     }),
 });

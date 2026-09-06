@@ -285,8 +285,315 @@ const getUsers = async (query: IGetUsersQuery) => {
     };
 };
 
+const getUserById = async (id: string) => {
+    const user = await prisma.user.findUnique({
+        where: {
+            id,
+        },
+        select: {
+            id: true,
+            email: true,
+            emailVerified: true,
+            role: true,
+            status: true,
+            needPasswordChange: true,
+            isDeleted: true,
+            deletedAt: true,
+            createdAt: true,
+            updatedAt: true,
+
+            patient: {
+                select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    phone: true,
+                    dateOfBirth: true,
+                    gender: true,
+                    bloodGroup: true,
+                    emergencyContactName: true,
+                    emergencyContactPhone: true,
+                    address: true,
+                    createdAt: true,
+                    updatedAt: true,
+                },
+            },
+
+            driver: {
+                select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    phone: true,
+                    dateOfBirth: true,
+                    gender: true,
+                    address: true,
+                    employeeId: true,
+                    licenseNumber: true,
+                    licenseExpiryDate: true,
+                    status: true,
+                    createdAt: true,
+                    updatedAt: true,
+
+                    ambulance: {
+                        select: {
+                            id: true,
+                            registrationNo: true,
+                            model: true,
+                            manufacturer: true,
+                            year: true,
+                            capacity: true,
+                            status: true,
+
+                            type: {
+                                select: {
+                                    id: true,
+                                    name: true,
+                                    description: true,
+                                    baseFare: true,
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    });
+
+    if (!user) {
+        throw new Error("User not found");
+    }
+
+    return user;
+};
+
+const updateUserStatus = async (
+    id: string,
+    status: UserStatus,
+    adminUserId: string
+) => {
+    const user = await prisma.user.findUnique({
+        where: {
+            id,
+        },
+        select: {
+            id: true,
+            email: true,
+            role: true,
+            status: true,
+            isDeleted: true,
+        },
+    });
+
+    if (!user) {
+        throw new Error("User not found");
+    }
+
+    if (user.isDeleted) {
+        throw new Error("Cannot update status of a deleted user");
+    }
+
+    if (user.id === adminUserId) {
+        throw new Error("You cannot change your own status");
+    }
+
+    if (user.status === status) {
+        throw new Error(`User is already ${status}`);
+    }
+
+    const result = await prisma.$transaction(async (tx) => {
+        const updatedUser = await tx.user.update({
+            where: {
+                id,
+            },
+            data: {
+                status,
+            },
+            select: {
+                id: true,
+                email: true,
+                emailVerified: true,
+                role: true,
+                status: true,
+                needPasswordChange: true,
+                isDeleted: true,
+                createdAt: true,
+                updatedAt: true,
+            },
+        });
+
+        await auditLogService.createAuditLog(tx, {
+            userId: adminUserId,
+            action: "STATUS_CHANGE",
+            entity: "USER",
+            entityId: updatedUser.id,
+            oldValue: {
+                status: user.status,
+            },
+            newValue: {
+                status: updatedUser.status,
+            },
+            description: `User status changed from ${user.status} to ${updatedUser.status}`,
+        });
+
+        return updatedUser;
+    });
+
+    return result;
+};
+
+const deleteUser = async (
+    id: string,
+    adminUserId: string
+) => {
+    const user = await prisma.user.findUnique({
+        where: {
+            id,
+        },
+        include: {
+            patient: true,
+            driver: {
+                include: {
+                    ambulance: true,
+                    dispatches: {
+                        where: {
+                            status: {
+                                in: [
+                                    "ASSIGNED",
+                                    "ACCEPTED",
+                                    "EN_ROUTE",
+                                    "ARRIVED",
+                                    "PATIENT_PICKED_UP",
+                                    "AT_HOSPITAL",
+                                ],
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    });
+
+    if (!user) {
+        throw new Error("User not found");
+    }
+
+    if (user.isDeleted) {
+        throw new Error("User is already deleted");
+    }
+
+    if (user.id === adminUserId) {
+        throw new Error("You cannot delete your own account");
+    }
+
+    // Driver-specific checks
+    if (user.driver) {
+        if (user.driver.isDeleted) {
+            throw new Error("Driver profile is already deleted");
+        }
+
+        if (user.driver.ambulance) {
+            throw new Error(
+                "Cannot delete a driver who is assigned to an ambulance"
+            );
+        }
+
+        if (user.driver.dispatches.length > 0) {
+            throw new Error(
+                "Cannot delete a driver with an active dispatch"
+            );
+        }
+    }
+
+    const deletedAt = new Date();
+
+    const result = await prisma.$transaction(async (tx) => {
+        // Soft delete User
+        const deletedUser = await tx.user.update({
+            where: {
+                id: user.id,
+            },
+            data: {
+                isDeleted: true,
+                deletedAt,
+                status: "INACTIVE",
+            },
+            select: {
+                id: true,
+                email: true,
+                role: true,
+                status: true,
+                isDeleted: true,
+                deletedAt: true,
+                updatedAt: true,
+            },
+        });
+
+        // Soft delete Patient profile
+        if (user.patient) {
+            await tx.patient.update({
+                where: {
+                    id: user.patient.id,
+                },
+                data: {
+                    isDeleted: true,
+                    deletedAt,
+                },
+            });
+        }
+
+        // Soft delete Driver profile
+        if (user.driver) {
+            await tx.driver.update({
+                where: {
+                    id: user.driver.id,
+                },
+                data: {
+                    isDeleted: true,
+                    deletedAt,
+                    status: "OFF_DUTY",
+                },
+            });
+        }
+
+        // Create audit log
+        await auditLogService.createAuditLog(tx, {
+            userId: adminUserId,
+            action: "SOFT_DELETE",
+            entity: "USER",
+            entityId: deletedUser.id,
+            oldValue: {
+                email: user.email,
+                role: user.role,
+                status: user.status,
+                isDeleted: user.isDeleted,
+                deletedAt: user.deletedAt,
+                patientId: user.patient?.id ?? null,
+                driverId: user.driver?.id ?? null,
+            },
+            newValue: {
+                email: deletedUser.email,
+                role: deletedUser.role,
+                status: deletedUser.status,
+                isDeleted: deletedUser.isDeleted,
+                deletedAt: deletedUser.deletedAt,
+                patientDeleted: !!user.patient,
+                driverDeleted: !!user.driver,
+            },
+            description: "User and associated profile soft deleted",
+        });
+
+        return deletedUser;
+    });
+
+    return result;
+};
+
 export const userService = {
     updateMyProfile,
     getMyProfile,
-    getUsers
+    getUsers,
+    getUserById,
+    updateUserStatus,
+    deleteUser
 };
