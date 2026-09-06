@@ -17,10 +17,10 @@ PATCH  /api/v1/users/:id/status //done
 DELETE /api/v1/users/:id  //done
 
 Patient module
-GET    /api/v1/patients/me
-PATCH  /api/v1/patients/me
-GET    /api/v1/patients/:id
+GET    /api/v1/patients/me  //done
+PATCH  /api/v1/patients/me  //done
 GET    /api/v1/patients/:id/emergency-requests
+GET    /api/v1/patients/:id
 
 Driver module
 GET    /api/v1/drivers //done
