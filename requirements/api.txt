@@ -26,8 +26,8 @@ Driver module
 GET    /api/v1/drivers //done
 POST   /api/v1/drivers  //done
 GET    /api/v1/drivers/:id  //done
-PATCH  /api/v1/drivers/:id
-PATCH  /api/v1/drivers/:id/status
+PATCH  /api/v1/drivers/:id  //done
+PATCH  /api/v1/drivers/:id/status //dpme
 DELETE /api/v1/drivers/:id
 GET    /api/v1/drivers/:id/dispatches
 GET    /api/v1/drivers/me

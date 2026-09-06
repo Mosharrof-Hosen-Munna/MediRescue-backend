@@ -54,8 +54,43 @@ const getDriverById = catchAsync(
     }
 );
 
+const updateDriver = catchAsync(
+    async (req: Request, res: Response) => {
+        const result = await driverService.updateDriver(
+            req.params.id as string,
+            req.body,
+            req.user.userId
+        );
+
+        sendResponse(res, {
+            statusCode: httpStatus.OK,
+            success: true,
+            message: "Driver updated successfully",
+            data: result,
+        });
+    }
+);
+
+const deleteDriver = catchAsync(
+    async (req: Request, res: Response) => {
+        const result = await driverService.deleteDriver(
+            req.params.id as string,
+            req.user.userId
+        );
+
+        sendResponse(res, {
+            statusCode: httpStatus.OK,
+            success: true,
+            message: "Driver deleted successfully",
+            data: result,
+        });
+    }
+);
+
 export const driverController = {
     getAllDrivers,
     createDriver,
-    getDriverById
+    getDriverById,
+    updateDriver,
+    deleteDriver
 };

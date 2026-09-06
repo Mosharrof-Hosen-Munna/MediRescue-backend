@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import { prisma } from "../../lib/prisma";
-import { ICreateDriverPayload, IGetDriversQuery } from "./driver.interface";
+import { ICreateDriverPayload, IGetDriversQuery, IUpdateDriverPayload, IUpdateDriverStatusPayload } from "./driver.interface";
 import { auditLogService } from "../auditLog/auditLog.service";
 
 const getAllDrivers = async (query: IGetDriversQuery) => {
@@ -272,8 +272,357 @@ const getDriverById = async (id: string, userId: string, userRole: string) => {
   return driver;
 };
 
+const updateDriver = async (
+    id: string,
+    payload: IUpdateDriverPayload,
+    adminUserId: string
+) => {
+    const driver = await prisma.driver.findUnique({
+        where: {
+            id,
+        },
+    });
+
+    if (!driver) {
+        throw new Error("Driver not found");
+    }
+
+    if (driver.isDeleted) {
+        throw new Error("Driver profile is deleted");
+    }
+
+    if (
+        payload.employeeId &&
+        payload.employeeId !== driver.employeeId
+    ) {
+        const existingEmployee = await prisma.driver.findUnique({
+            where: {
+                employeeId: payload.employeeId,
+            },
+        });
+
+        if (existingEmployee) {
+            throw new Error("Employee ID already exists");
+        }
+    }
+
+    if (
+        payload.licenseNumber &&
+        payload.licenseNumber !== driver.licenseNumber
+    ) {
+        const existingLicense = await prisma.driver.findUnique({
+            where: {
+                licenseNumber: payload.licenseNumber,
+            },
+        });
+
+        if (existingLicense) {
+            throw new Error("License number already exists");
+        }
+    }
+
+    const oldValue = {
+        firstName: driver.firstName,
+        lastName: driver.lastName,
+        phone: driver.phone,
+        dateOfBirth: driver.dateOfBirth,
+        gender: driver.gender,
+        address: driver.address,
+        employeeId: driver.employeeId,
+        licenseNumber: driver.licenseNumber,
+        licenseExpiryDate: driver.licenseExpiryDate,
+    };
+
+    const result = await prisma.$transaction(async (tx) => {
+        const updatedDriver = await tx.driver.update({
+            where: {
+                id,
+            },
+            data: {
+                ...(payload.firstName !== undefined && {
+                    firstName: payload.firstName,
+                }),
+                ...(payload.lastName !== undefined && {
+                    lastName: payload.lastName,
+                }),
+                ...(payload.phone !== undefined && {
+                    phone: payload.phone,
+                }),
+                ...(payload.dateOfBirth !== undefined && {
+                    dateOfBirth: new Date(payload.dateOfBirth),
+                }),
+                ...(payload.gender !== undefined && {
+                    gender: payload.gender,
+                }),
+                ...(payload.address !== undefined && {
+                    address: payload.address,
+                }),
+                ...(payload.employeeId !== undefined && {
+                    employeeId: payload.employeeId,
+                }),
+                ...(payload.licenseNumber !== undefined && {
+                    licenseNumber: payload.licenseNumber,
+                }),
+                ...(payload.licenseExpiryDate !== undefined && {
+                    licenseExpiryDate: new Date(
+                        payload.licenseExpiryDate
+                    ),
+                }),
+            },
+            select: {
+                id: true,
+                userId: true,
+                firstName: true,
+                lastName: true,
+                phone: true,
+                dateOfBirth: true,
+                gender: true,
+                address: true,
+                employeeId: true,
+                licenseNumber: true,
+                licenseExpiryDate: true,
+                status: true,
+                isDeleted: true,
+                createdAt: true,
+                updatedAt: true,
+            },
+        });
+
+        await auditLogService.createAuditLog(tx, {
+            userId: adminUserId,
+            action: "UPDATE",
+            entity: "DRIVER",
+            entityId: updatedDriver.id,
+            oldValue,
+            newValue: {
+                firstName: updatedDriver.firstName,
+                lastName: updatedDriver.lastName,
+                phone: updatedDriver.phone,
+                dateOfBirth: updatedDriver.dateOfBirth,
+                gender: updatedDriver.gender,
+                address: updatedDriver.address,
+                employeeId: updatedDriver.employeeId,
+                licenseNumber: updatedDriver.licenseNumber,
+                licenseExpiryDate:
+                    updatedDriver.licenseExpiryDate,
+            },
+            description: "Driver profile updated",
+        });
+
+        return updatedDriver;
+    });
+
+    return result;
+};
+
+const updateDriverStatus = async (
+    id: string,
+    payload: IUpdateDriverStatusPayload,
+    adminUserId: string
+) => {
+    const driver = await prisma.driver.findUnique({
+        where: {
+            id,
+        },
+        include:{
+          ambulance:true
+        }
+    });
+
+    if (!driver) {
+        throw new Error("Driver not found");
+    }
+
+    if (driver.isDeleted) {
+        throw new Error("Driver profile is deleted");
+    }
+
+    if (driver.status === payload.status) {
+        throw new Error("Driver is already in this status");
+    }
+
+    if (
+        payload.status === "OFF_DUTY" &&
+        driver.ambulance
+    ) {
+        throw new Error(
+            "Cannot set driver off duty while assigned to an ambulance"
+        );
+    }
+
+    if (
+        payload.status === "OFF_DUTY" &&
+        driver.status === "BUSY"
+    ) {
+        throw new Error(
+            "Cannot set a busy driver off duty"
+        );
+    }
+
+    const oldValue = {
+        status: driver.status,
+    };
+
+    const result = await prisma.$transaction(async (tx) => {
+        const updatedDriver = await tx.driver.update({
+            where: {
+                id,
+            },
+            data: {
+                status: payload.status,
+            },
+            select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                phone: true,
+                employeeId: true,
+                status: true,
+                isDeleted: true,
+                updatedAt: true,
+            },
+        });
+
+        await auditLogService.createAuditLog(tx, {
+            userId: adminUserId,
+            action: "STATUS_CHANGE",
+            entity: "DRIVER",
+            entityId: updatedDriver.id,
+            oldValue,
+            newValue: {
+                status: updatedDriver.status,
+            },
+            description: "Driver status changed",
+        });
+
+        return updatedDriver;
+    });
+
+    return result;
+};
+
+const deleteDriver = async (
+    id: string,
+    adminUserId: string
+) => {
+    const driver = await prisma.driver.findUnique({
+        where: {
+            id,
+        },
+        include: {
+            ambulance: {
+                select: {
+                    id: true,
+                    registrationNo: true,
+                },
+            },
+            dispatches: {
+                where: {
+                    status: {
+                        in: [
+                            "ASSIGNED",
+                            "ACCEPTED",
+                            "EN_ROUTE",
+                            "ARRIVED",
+                            "PATIENT_PICKED_UP",
+                            "AT_HOSPITAL",
+                        ],
+                    },
+                },
+                select: {
+                    id: true,
+                    status: true,
+                },
+            },
+        },
+    });
+
+    if (!driver) {
+        throw new Error("Driver not found");
+    }
+
+    if (driver.isDeleted) {
+        throw new Error("Driver is already deleted");
+    }
+
+    if (driver.ambulance) {
+        throw new Error(
+            "Cannot delete a driver who is assigned to an ambulance"
+        );
+    }
+
+    if (driver.dispatches.length > 0) {
+        throw new Error(
+            "Cannot delete a driver with an active dispatch"
+        );
+    }
+
+    const deletedAt = new Date();
+
+    const result = await prisma.$transaction(async (tx) => {
+        const deletedDriver = await tx.driver.update({
+            where: {
+                id,
+            },
+            data: {
+                isDeleted: true,
+                deletedAt,
+                status: "OFF_DUTY",
+            },
+            select: {
+                id: true,
+                userId: true,
+                firstName: true,
+                lastName: true,
+                phone: true,
+                employeeId: true,
+                licenseNumber: true,
+                status: true,
+                isDeleted: true,
+                deletedAt: true,
+                updatedAt: true,
+            },
+        });
+
+        await auditLogService.createAuditLog(tx, {
+            userId: adminUserId,
+            action: "SOFT_DELETE",
+            entity: "DRIVER",
+            entityId: deletedDriver.id,
+            oldValue: {
+                firstName: driver.firstName,
+                lastName: driver.lastName,
+                phone: driver.phone,
+                employeeId: driver.employeeId,
+                licenseNumber: driver.licenseNumber,
+                status: driver.status,
+                isDeleted: driver.isDeleted,
+                deletedAt: driver.deletedAt,
+            },
+            newValue: {
+                firstName: deletedDriver.firstName,
+                lastName: deletedDriver.lastName,
+                phone: deletedDriver.phone,
+                employeeId: deletedDriver.employeeId,
+                licenseNumber: deletedDriver.licenseNumber,
+                status: deletedDriver.status,
+                isDeleted: deletedDriver.isDeleted,
+                deletedAt: deletedDriver.deletedAt,
+            },
+            description: "Driver soft deleted",
+        });
+
+        return deletedDriver;
+    });
+
+    return result;
+};
+
 export const driverService = {
   getAllDrivers,
   createDriver,
   getDriverById,
+  deleteDriver,
+  updateDriver,
+  updateDriverStatus
 };
