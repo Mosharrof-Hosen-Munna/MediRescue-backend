@@ -4,6 +4,7 @@ import httpStatus from "http-status";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import { emergencyRequestService } from "./emergencyRequest.service";
+import { ICancelEmergencyRequestPayload } from "./emergencyRequest.interface";
 
 const createEmergencyRequest = catchAsync(
   async (req: Request, res: Response) => {
@@ -57,9 +58,48 @@ const getEmergencyRequestById = catchAsync(
     });
   },
 );
+const updateEmergencyRequest = catchAsync(
+    async (req: Request, res: Response) => {
+        const result =
+            await emergencyRequestService.updateEmergencyRequest(
+                req.params.id as string,
+                req.user.userId,
+                req.user.role,
+                req.body
+            );
+
+        sendResponse(res, {
+            statusCode: httpStatus.OK,
+            success: true,
+            message: "Emergency request updated successfully",
+            data: result,
+        });
+    }
+);
+
+const cancelEmergencyRequest = catchAsync(
+    async (req: Request, res: Response) => {
+        const result =
+            await emergencyRequestService.cancelEmergencyRequest(
+                req.params.id as string,
+                req.user.userId as string,
+                req.user?.role as "ADMIN" | "PATIENT",
+                req.body as ICancelEmergencyRequestPayload
+            );
+
+        sendResponse(res, {
+            statusCode: httpStatus.OK,
+            success: true,
+            message: "Emergency request cancelled successfully",
+            data: result,
+        });
+    }
+);
 
 export const emergencyRequestController = {
   createEmergencyRequest,
   getAllEmergencyRequests,
-  getEmergencyRequestById
+  getEmergencyRequestById,
+  updateEmergencyRequest,
+  cancelEmergencyRequest
 };

@@ -17,3 +17,17 @@ export interface IGetEmergencyRequestsQuery {
 export interface IGetEmergencyRequestByIdParams {
     id: string;
 }
+
+
+export interface IUpdateEmergencyRequestPayload {
+    serviceTypeId?: string;
+    ambulanceTypeId?: string;
+    pickupAddress?: string;
+    emergencyDescription?: string;
+    patientCondition?: string;
+    additionalNotes?: string;
+}
+
+export interface ICancelEmergencyRequestPayload {
+    cancellationReason?: string;
+}

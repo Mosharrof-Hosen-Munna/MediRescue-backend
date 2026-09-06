@@ -1,7 +1,8 @@
 import { Role } from './../../../generated/prisma/enums';
 import { prisma } from "../../lib/prisma";
-import { ICreateEmergencyRequestPayload, IGetEmergencyRequestByIdParams } from "./emergencyRequest.interface";
+import { ICancelEmergencyRequestPayload, ICreateEmergencyRequestPayload, IGetEmergencyRequestByIdParams, IUpdateEmergencyRequestPayload } from "./emergencyRequest.interface";
 import { IGetEmergencyRequestsQuery } from "./emergencyRequest.interface";
+import { auditLogService } from '../auditLog/auditLog.service';
 
 const createEmergencyRequest = async (
   userId: string,
@@ -299,9 +300,309 @@ const getEmergencyRequestById = async (
     return emergencyRequest;
 };
 
+const updateEmergencyRequest = async (
+    id: string,
+    userId: string,
+    userRole: string,
+    payload: IUpdateEmergencyRequestPayload
+) => {
+    const emergencyRequest =
+        await prisma.emergencyRequest.findUnique({
+            where: {
+                id,
+            },
+            include: {
+                patient: {
+                    select: {
+                        userId: true,
+                    },
+                },
+            },
+        });
 
+    if (!emergencyRequest) {
+        throw new Error("Emergency request not found");
+    }
+
+    if (
+        userRole === "PATIENT" &&
+        emergencyRequest.patient.userId !== userId
+    ) {
+        throw new Error(
+            "You are not allowed to update this emergency request"
+        );
+    }
+
+    if (
+        userRole === "PATIENT" &&
+        emergencyRequest.status !== "PENDING"
+    ) {
+        throw new Error(
+            "Only pending emergency requests can be updated"
+        );
+    }
+
+    if (payload.serviceTypeId) {
+        const serviceType =
+            await prisma.serviceType.findUnique({
+                where: {
+                    id: payload.serviceTypeId,
+                },
+            });
+
+        if (!serviceType || !serviceType.isActive) {
+            throw new Error("Active service type not found");
+        }
+    }
+
+    if (payload.ambulanceTypeId) {
+        const ambulanceType =
+            await prisma.ambulanceType.findUnique({
+                where: {
+                    id: payload.ambulanceTypeId,
+                },
+            });
+
+        if (!ambulanceType || !ambulanceType.isActive) {
+            throw new Error("Active ambulance type not found");
+        }
+    }
+
+    const oldValue = {
+        serviceTypeId: emergencyRequest.serviceTypeId,
+        ambulanceTypeId: emergencyRequest.ambulanceTypeId,
+        pickupAddress: emergencyRequest.pickupAddress,
+        emergencyDescription:
+            emergencyRequest.emergencyDescription,
+        patientCondition: emergencyRequest.patientCondition,
+        additionalNotes: emergencyRequest.additionalNotes,
+    };
+
+    const result = await prisma.$transaction(async (tx) => {
+        const updatedRequest =
+            await tx.emergencyRequest.update({
+                where: {
+                    id,
+                },
+                data: {
+                    ...(payload.serviceTypeId && {
+                        serviceTypeId: payload.serviceTypeId,
+                    }),
+                    ...(payload.ambulanceTypeId && {
+                        ambulanceTypeId: payload.ambulanceTypeId,
+                    }),
+                    ...(payload.pickupAddress && {
+                        pickupAddress: payload.pickupAddress,
+                    }),
+                    ...(payload.emergencyDescription !== undefined && {
+                        emergencyDescription:
+                            payload.emergencyDescription,
+                    }),
+                    ...(payload.patientCondition !== undefined && {
+                        patientCondition:
+                            payload.patientCondition,
+                    }),
+                    ...(payload.additionalNotes !== undefined && {
+                        additionalNotes:
+                            payload.additionalNotes,
+                    }),
+                },
+                include: {
+                    patient: {
+                        select: {
+                            id: true,
+                            firstName: true,
+                            lastName: true,
+                            phone: true,
+                        },
+                    },
+                    serviceType: true,
+                    ambulanceType: true,
+                    dispatch: {
+                        include: {
+                            ambulance: true,
+                            driver: {
+                                select: {
+                                    id: true,
+                                    firstName: true,
+                                    lastName: true,
+                                    phone: true,
+                                },
+                            },
+                        },
+                    },
+                },
+            });
+
+        await auditLogService.createAuditLog(tx, {
+            userId,
+            action: "UPDATE",
+            entity: "EMERGENCY_REQUEST",
+            entityId: id,
+            oldValue,
+            newValue: {
+                serviceTypeId:
+                    updatedRequest.serviceTypeId,
+                ambulanceTypeId:
+                    updatedRequest.ambulanceTypeId,
+                pickupAddress:
+                    updatedRequest.pickupAddress,
+                emergencyDescription:
+                    updatedRequest.emergencyDescription,
+                patientCondition:
+                    updatedRequest.patientCondition,
+                additionalNotes:
+                    updatedRequest.additionalNotes,
+            },
+            description:
+                "Emergency request updated",
+        });
+
+        return updatedRequest;
+    });
+
+    return result;
+};
+
+const cancelEmergencyRequest = async (
+    id: string,
+    userId: string,
+    userRole: "PATIENT" | "ADMIN",
+    payload: ICancelEmergencyRequestPayload
+) => {
+    const emergencyRequest =
+        await prisma.emergencyRequest.findUnique({
+            where: {
+                id,
+            },
+            include: {
+                patient: {
+                    select: {
+                        userId: true,
+                    },
+                },
+            },
+        });
+
+    if (!emergencyRequest) {
+        throw new Error("Emergency request not found");
+    }
+
+    if (
+        userRole === "PATIENT" &&
+        emergencyRequest.patient.userId !== userId
+    ) {
+        throw new Error(
+            "You are not allowed to cancel this emergency request"
+        );
+    }
+
+    if (
+        [
+            "COMPLETED",
+            "CANCELLED",
+            "REJECTED",
+            "NO_AMBULANCE_AVAILABLE",
+        ].includes(emergencyRequest.status)
+    ) {
+        throw new Error(
+            `Emergency request cannot be cancelled because it is already ${emergencyRequest.status.toLowerCase().replaceAll("_", " ")}`
+        );
+    }
+
+    if (
+        userRole === "PATIENT" &&
+        emergencyRequest.status !== "PENDING"
+    ) {
+        throw new Error(
+            "You can only cancel a pending emergency request"
+        );
+    }
+
+    const oldValue = {
+        status: emergencyRequest.status,
+        cancelledAt: emergencyRequest.cancelledAt,
+        cancellationReason:
+            emergencyRequest.cancellationReason,
+    };
+
+    const result = await prisma.$transaction(async (tx) => {
+        const updatedRequest =
+            await tx.emergencyRequest.update({
+                where: {
+                    id,
+                },
+                data: {
+                    status: "CANCELLED",
+                    cancelledAt: new Date(),
+                    cancellationReason:
+                        payload.cancellationReason,
+                },
+                include: {
+                    patient: {
+                        select: {
+                            id: true,
+                            firstName: true,
+                            lastName: true,
+                            phone: true,
+                        },
+                    },
+                    serviceType: {
+                        select: {
+                            id: true,
+                            name: true,
+                            description: true,
+                        },
+                    },
+                    ambulanceType: {
+                        select: {
+                            id: true,
+                            name: true,
+                            description: true,
+                            baseFare: true,
+                        },
+                    },
+                    dispatch: {
+                        include: {
+                            ambulance: true,
+                            driver: {
+                                select: {
+                                    id: true,
+                                    firstName: true,
+                                    lastName: true,
+                                    phone: true,
+                                },
+                            },
+                        },
+                    },
+                },
+            });
+
+        await auditLogService.createAuditLog(tx, {
+            userId,
+            action: "STATUS_CHANGE",
+            entity: "EMERGENCY_REQUEST",
+            entityId: id,
+            oldValue,
+            newValue: {
+                status: updatedRequest.status,
+                cancelledAt: updatedRequest.cancelledAt,
+                cancellationReason:
+                    updatedRequest.cancellationReason,
+            },
+            description:
+                "Emergency request cancelled",
+        });
+
+        return updatedRequest;
+    });
+
+    return result;
+};
 export const emergencyRequestService = {
   getAllEmergencyRequests,
   createEmergencyRequest,
-  getEmergencyRequestById
+  getEmergencyRequestById,
+  updateEmergencyRequest,
+  cancelEmergencyRequest
 };
