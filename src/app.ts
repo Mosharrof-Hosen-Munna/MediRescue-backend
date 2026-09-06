@@ -11,6 +11,7 @@ import { serviceTypeRouter } from './app/module/serviceType/serviceType.route'
 import { ambulanceTypeRouter } from './app/module/ambulanceType/ambulanceType.route'
 import { ambulanceRouter } from './app/module/ambulance/ambulance.route'
 import { driverRouter } from './app/module/driver/driver.route'
+import { userRouter } from './app/module/user/user.route'
 
 const app: Application = express()
 
@@ -30,6 +31,7 @@ app.use(cookieParser())
 
 
 app.use("/api/v1/auth",AuthRoutes)
+app.use("/api/v1/users", userRouter);
 app.use('/api/v1/emergency-requests',emergencyRequestRouter)
 app.use('/api/v1/service-types',serviceTypeRouter)
 app.use('/api/v1/ambulance-types',ambulanceTypeRouter)
