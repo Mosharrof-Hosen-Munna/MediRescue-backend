@@ -408,6 +408,7 @@ const updateAmbulanceStatus = async (
   ambulanceId: string,
   status: AmbulanceStatus,
 ) => {
+    console.log(userId,ambulanceId,status)
   const ambulance = await prisma.ambulance.findUnique({
     where: {
       id: ambulanceId,
@@ -442,29 +443,174 @@ const updateAmbulanceStatus = async (
       },
     });
 
-    const oldValue = {
-      status: ambulance.status,
-    };
 
-    await auditLogService.createAuditLog(tx, {
-      userId: userId,
-      action: "UPDATE",
-      entity: "AMBULANCE",
-      entityId: updatedAmbulance.id,
-      oldValue,
-      newValue: {
-        registrationNo: updatedAmbulance.registrationNo,
-        model: updatedAmbulance.model,
-        manufacturer: updatedAmbulance.manufacturer,
-        year: updatedAmbulance.year,
-        capacity: updatedAmbulance.capacity,
-        typeId: updatedAmbulance.typeId,
-      },
-      description: "Ambulance status updated",
-    });
+     await auditLogService.createAuditLog(tx, {
+            userId: userId,
+            action: "STATUS_CHANGE",
+            entity: "AMBULANCE",
+            entityId: updatedAmbulance.id,
+            oldValue: {
+                status: ambulance.status,
+            },
+            newValue: {
+                status: updatedAmbulance.status,
+            },
+            description: `Ambulance status changed from ${ambulance.status} to ${updatedAmbulance.status}`,
+        });
+
+    return updatedAmbulance
   });
 
   return result;
+};
+const updateAmbulanceDriver = async (
+    id: string,
+    driverId: string | null | undefined,
+    adminUserId: string
+) => {
+    const ambulance = await prisma.ambulance.findUnique({
+        where: {
+            id,
+        },
+        include: {
+            type: true,
+            driver: {
+                select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    phone: true,
+                    employeeId: true,
+                    status: true,
+                },
+            },
+        },
+    });
+
+    if (!ambulance) {
+        throw new Error("Ambulance not found");
+    }
+
+    if (ambulance.isDeleted) {
+        throw new Error("Cannot assign driver to a deleted ambulance");
+    }
+
+    if (
+        ambulance.status === "ON_TRIP" ||
+        ambulance.status === "ASSIGNED"
+    ) {
+        throw new Error(
+            "Cannot change driver while ambulance is assigned or on a trip"
+        );
+    }
+
+    if (driverId === ambulance.driverId) {
+        throw new Error(
+            driverId
+                ? "This driver is already assigned to the ambulance"
+                : "No driver is currently assigned to this ambulance"
+        );
+    }
+
+    let driver;
+
+    if (driverId) {
+        driver = await prisma.driver.findUnique({
+            where: {
+                id: driverId,
+            },
+            select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                phone: true,
+                employeeId: true,
+                status: true,
+                ambulance: {
+                    select: {
+                        id: true,
+                        registrationNo: true,
+                    },
+                },
+            },
+        });
+
+        if (!driver) {
+            throw new Error("Driver not found");
+        }
+
+        if (driver.status !== "AVAILABLE") {
+            throw new Error(
+                "Driver is not available for assignment"
+            );
+        }
+
+        if (driver.ambulance) {
+            throw new Error(
+                "Driver is already assigned to another ambulance"
+            );
+        }
+    }
+
+    const result = await prisma.$transaction(async (tx) => {
+        const updatedAmbulance = await tx.ambulance.update({
+            where: {
+                id,
+            },
+            data: {
+                driverId: driverId ?? null,
+            },
+            include: {
+                type: true,
+                driver: {
+                    select: {
+                        id: true,
+                        firstName: true,
+                        lastName: true,
+                        phone: true,
+                        employeeId: true,
+                        licenseNumber: true,
+                        status: true,
+                    },
+                },
+            },
+        });
+
+        await auditLogService.createAuditLog(tx, {
+            userId: adminUserId,
+            action: "UPDATE",
+            entity: "AMBULANCE",
+            entityId: updatedAmbulance.id,
+            oldValue: {
+                driverId: ambulance.driverId,
+                driver: ambulance.driver
+                    ? {
+                          id: ambulance.driver.id,
+                          name: `${ambulance.driver.firstName} ${ambulance.driver.lastName}`,
+                          employeeId: ambulance.driver.employeeId,
+                      }
+                    : null,
+            },
+            newValue: {
+                driverId: updatedAmbulance.driverId,
+                driver: updatedAmbulance.driver
+                    ? {
+                          id: updatedAmbulance.driver.id,
+                          name: `${updatedAmbulance.driver.firstName} ${updatedAmbulance.driver.lastName}`,
+                          employeeId:
+                              updatedAmbulance.driver.employeeId,
+                      }
+                    : null,
+            },
+            description: driverId
+                ? "Driver assigned to ambulance"
+                : "Driver removed from ambulance",
+        });
+
+        return updatedAmbulance;
+    });
+
+    return result;
 };
 
 export const ambulanceService = {
@@ -473,5 +619,6 @@ export const ambulanceService = {
   getAmbulanceById,
   updateAmbulance,
   deleteAmbulance,
-  updateAmbulanceStatus
+  updateAmbulanceStatus,
+  updateAmbulanceDriver
 };

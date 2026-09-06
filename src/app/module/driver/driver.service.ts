@@ -196,7 +196,7 @@ const createDriver = async (
         licenseExpiryDate: licenseExpiryDate
           ? new Date(licenseExpiryDate)
           : undefined,
-        status: "OFF_DUTY",
+        status: "AVAILABLE",
       },
       include: {
         user: {

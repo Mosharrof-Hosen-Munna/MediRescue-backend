@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { ambulanceController } from "./ambulance.controller";
-import { createAmbulanceSchema, deleteAmbulanceSchema, getAmbulanceByIdSchema, getAmbulancesQuerySchema, updateAmbulanceSchema } from "./ambulance.validation";
+import { createAmbulanceSchema, deleteAmbulanceSchema, getAmbulanceByIdSchema, getAmbulancesQuerySchema, updateAmbulanceDriverSchema, updateAmbulanceSchema, updateAmbulanceStatusSchema } from "./ambulance.validation";
 import { Role } from "../../../generated/prisma/enums";
 import { auth } from "../../middleware/authCheck";
 import { validateRequest } from "../../middleware/validateRequest";
@@ -36,8 +36,15 @@ router.patch(
 router.patch(
     "/:id/status",
     auth(Role.ADMIN),
-    validateRequest(updateAmbulanceSchema),
-    ambulanceController.updateAmbulance
+    validateRequest(updateAmbulanceStatusSchema),
+    ambulanceController.updateAmbulanceStatus
+);
+
+router.patch(
+    "/:id/driver",
+    auth(Role.ADMIN),
+    validateRequest(updateAmbulanceDriverSchema),
+    ambulanceController.updateAmbulanceDriver
 );
 
 router.delete(

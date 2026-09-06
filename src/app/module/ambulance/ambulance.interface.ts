@@ -1,3 +1,5 @@
+import { AmbulanceStatus } from "../../../generated/prisma/browser";
+
 export interface ICreateAmbulancePayload {
     registrationNo: string;
     model: string;
@@ -34,7 +36,9 @@ export interface IDeleteAmbulanceParams {
 }
 
 export interface IUpdateAmbulanceStatusPayload{
-    userId:string;
-    status: string;
-    ambulanceId:string
+    status: AmbulanceStatus;
+}
+
+export interface IUpdateAmbulanceDriverPayload {
+    driverId?: string | null;
 }

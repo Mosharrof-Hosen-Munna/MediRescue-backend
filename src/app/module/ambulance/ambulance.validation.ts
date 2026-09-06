@@ -137,7 +137,22 @@ export const updateAmbulanceStatusSchema = z.object({
     params: z.object({
         id: z.string().uuid("Invalid ambulance ID"),
     }),
-    body:z.object({
-        status: z.nativeEnum(AmbulanceStatus)
-    })
+
+    body: z.object({
+        status: z.nativeEnum(AmbulanceStatus),
+    }),
+});
+
+export const updateAmbulanceDriverSchema = z.object({
+    params: z.object({
+        id: z.string().uuid("Invalid ambulance ID"),
+    }),
+
+    body: z.object({
+        driverId: z
+            .string()
+            .uuid("Invalid driver ID")
+            .nullable()
+            .optional(),
+    }),
 });
