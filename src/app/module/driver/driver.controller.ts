@@ -87,10 +87,62 @@ const deleteDriver = catchAsync(
     }
 );
 
+const getDriverDispatches = catchAsync(
+    async (req: Request, res: Response) => {
+        const result = await driverService.getDriverDispatches(
+            req.params.id as string,
+            req.query
+        );
+
+        sendResponse(res, {
+            statusCode: httpStatus.OK,
+            success: true,
+            message: "Driver dispatches retrieved successfully",
+            data: result.data,
+            meta: result.meta,
+        });
+    }
+);
+
+const getMyProfile = catchAsync(
+    async (req: Request, res: Response) => {
+        const result = await driverService.getMyProfile(
+            req.user.userId
+        );
+
+        sendResponse(res, {
+            statusCode: httpStatus.OK,
+            success: true,
+            message: "Driver profile retrieved successfully",
+            data: result,
+        });
+    }
+);
+
+const getMyDispatches = catchAsync(
+    async (req: Request, res: Response) => {
+        const result = await driverService.getMyDispatches(
+            req.user.userId,
+            req.query
+        );
+
+        sendResponse(res, {
+            statusCode: httpStatus.OK,
+            success: true,
+            message: "My dispatches retrieved successfully",
+            data: result.data,
+            meta: result.meta,
+        });
+    }
+);
+
 export const driverController = {
     getAllDrivers,
     createDriver,
     getDriverById,
     updateDriver,
-    deleteDriver
+    deleteDriver,
+    getDriverDispatches,
+    getMyProfile,
+    getMyDispatches
 };

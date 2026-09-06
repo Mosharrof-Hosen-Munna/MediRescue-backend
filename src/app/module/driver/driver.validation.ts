@@ -180,3 +180,46 @@ export const deleteDriverSchema = z.object({
         id: z.string().uuid("Invalid driver ID"),
     }),
 });
+
+export const getDriverDispatchesSchema = z.object({
+    params: z.object({
+        id: z.string().uuid("Invalid driver ID"),
+    }),
+    query: z.object({
+        page: z.string().optional(),
+        limit: z.string().optional(),
+        status: z
+            .enum([
+                "ASSIGNED",
+                "ACCEPTED",
+                "REJECTED",
+                "EN_ROUTE",
+                "ARRIVED",
+                "PATIENT_PICKED_UP",
+                "AT_HOSPITAL",
+                "COMPLETED",
+                "CANCELLED",
+            ])
+            .optional(),
+    }),
+});
+
+export const getMyDispatchesSchema = z.object({
+    query: z.object({
+        page: z.string().optional(),
+        limit: z.string().optional(),
+        status: z
+            .enum([
+                "ASSIGNED",
+                "ACCEPTED",
+                "REJECTED",
+                "EN_ROUTE",
+                "ARRIVED",
+                "PATIENT_PICKED_UP",
+                "AT_HOSPITAL",
+                "COMPLETED",
+                "CANCELLED",
+            ])
+            .optional(),
+    }),
+});

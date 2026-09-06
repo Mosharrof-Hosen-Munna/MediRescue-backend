@@ -1,4 +1,4 @@
-import { DriverStatus, Gender } from "../../../generated/prisma/enums";
+import { DispatchStatus, DriverStatus, Gender } from "../../../generated/prisma/enums";
 
 export interface IGetDriversQuery {
     page?: string;
@@ -39,4 +39,16 @@ export interface IUpdateDriverPayload {
 
 export interface IUpdateDriverStatusPayload {
     status: DriverStatus;
+}
+
+export interface IGetDriverDispatchesQuery {
+    page?: string;
+    limit?: string;
+    status?: DispatchStatus;
+}
+
+export interface IGetMyDispatchesQuery {
+    page?: string;
+    limit?: string;
+    status?: DispatchStatus;
 }

@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import { prisma } from "../../lib/prisma";
-import { ICreateDriverPayload, IGetDriversQuery, IUpdateDriverPayload, IUpdateDriverStatusPayload } from "./driver.interface";
+import { ICreateDriverPayload, IGetDriverDispatchesQuery, IGetDriversQuery, IGetMyDispatchesQuery, IUpdateDriverPayload, IUpdateDriverStatusPayload } from "./driver.interface";
 import { auditLogService } from "../auditLog/auditLog.service";
 
 const getAllDrivers = async (query: IGetDriversQuery) => {
@@ -258,6 +258,7 @@ const getDriverById = async (id: string, userId: string, userRole: string) => {
           type: true,
         },
       },
+      dispatches:true
     },
   });
 
@@ -618,11 +619,308 @@ const deleteDriver = async (
     return result;
 };
 
+const getDriverDispatches = async (
+    driverId: string,
+    query: IGetDriverDispatchesQuery
+) => {
+    const page = Number(query.page) || 1;
+    const limit = Number(query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const driver = await prisma.driver.findUnique({
+        where: {
+            id: driverId,
+        },
+        select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            employeeId: true,
+            isDeleted: true,
+        },
+    });
+
+    if (!driver) {
+        throw new Error("Driver not found");
+    }
+
+    if (driver.isDeleted) {
+        throw new Error("Driver profile is deleted");
+    }
+
+    const where = {
+        driverId,
+        ...(query.status && {
+            status: query.status,
+        }),
+    };
+
+    const [data, total] = await Promise.all([
+        prisma.dispatch.findMany({
+            where,
+            skip,
+            take: limit,
+            orderBy: {
+                assignedAt: "desc",
+            },
+            select: {
+                id: true,
+                status: true,
+                assignedAt: true,
+                acceptedAt: true,
+                arrivedAt: true,
+                pickedUpAt: true,
+                hospitalArrivedAt: true,
+                completedAt: true,
+                cancelledAt: true,
+                cancellationReason: true,
+                createdAt: true,
+                updatedAt: true,
+
+                emergencyRequest: {
+                    select: {
+                        id: true,
+                        requestNumber: true,
+                        pickupAddress: true,
+                        emergencyDescription: true,
+                        patientCondition: true,
+                        status: true,
+                        requestedAt: true,
+
+                        patient: {
+                            select: {
+                                id: true,
+                                firstName: true,
+                                lastName: true,
+                                phone: true,
+                            },
+                        },
+
+                        serviceType: {
+                            select: {
+                                id: true,
+                                name: true,
+                            },
+                        },
+
+                        ambulanceType: {
+                            select: {
+                                id: true,
+                                name: true,
+                            },
+                        },
+                    },
+                },
+
+                ambulance: {
+                    select: {
+                        id: true,
+                        registrationNo: true,
+                        model: true,
+                        manufacturer: true,
+                        status: true,
+                    },
+                },
+            },
+        }),
+
+        prisma.dispatch.count({
+            where,
+        }),
+    ]);
+
+    return {
+        data,
+        meta: {
+            page,
+            limit,
+            total,
+            totalPages: Math.ceil(total / limit),
+        },
+    };
+};
+
+const getMyProfile = async (userId: string) => {
+    const driver = await prisma.driver.findUnique({
+        where: {
+            userId,
+        },
+        include: {
+            user: {
+                select: {
+                    id: true,
+                    email: true,
+                    emailVerified: true,
+                    role: true,
+                    status: true,
+                    needPasswordChange: true,
+                    isDeleted: true,
+                    createdAt: true,
+                    updatedAt: true,
+                },
+            },
+            ambulance: {
+                select: {
+                    id: true,
+                    registrationNo: true,
+                    model: true,
+                    manufacturer: true,
+                    year: true,
+                    capacity: true,
+                    status: true,
+                    type: {
+                        select: {
+                            id: true,
+                            name: true,
+                            description: true,
+                            baseFare: true,
+                        },
+                    },
+                },
+            },
+        },
+    });
+
+    if (!driver) {
+        throw new Error("Driver profile not found");
+    }
+
+    if (driver.isDeleted || driver.user.isDeleted) {
+        throw new Error("Driver profile is deleted");
+    }
+
+    return driver;
+};
+
+const getMyDispatches = async (
+    userId: string,
+    query: IGetMyDispatchesQuery
+) => {
+    const page = Number(query.page) || 1;
+    const limit = Number(query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const driver = await prisma.driver.findUnique({
+        where: {
+            userId,
+        },
+        select: {
+            id: true,
+            isDeleted: true,
+        },
+    });
+
+    if (!driver) {
+        throw new Error("Driver profile not found");
+    }
+
+    if (driver.isDeleted) {
+        throw new Error("Driver profile is deleted");
+    }
+
+    const where = {
+        driverId: driver.id,
+        ...(query.status && {
+            status: query.status,
+        }),
+    };
+
+    const [data, total] = await Promise.all([
+        prisma.dispatch.findMany({
+            where,
+            skip,
+            take: limit,
+            orderBy: {
+                assignedAt: "desc",
+            },
+            select: {
+                id: true,
+                status: true,
+                assignedAt: true,
+                acceptedAt: true,
+                arrivedAt: true,
+                pickedUpAt: true,
+                hospitalArrivedAt: true,
+                completedAt: true,
+                cancelledAt: true,
+                cancellationReason: true,
+                createdAt: true,
+                updatedAt: true,
+
+                emergencyRequest: {
+                    select: {
+                        id: true,
+                        requestNumber: true,
+                        pickupAddress: true,
+                        emergencyDescription: true,
+                        patientCondition: true,
+                        additionalNotes: true,
+                        status: true,
+                        requestedAt: true,
+
+                        patient: {
+                            select: {
+                                id: true,
+                                firstName: true,
+                                lastName: true,
+                                phone: true,
+                            },
+                        },
+
+                        serviceType: {
+                            select: {
+                                id: true,
+                                name: true,
+                                description: true,
+                            },
+                        },
+
+                        ambulanceType: {
+                            select: {
+                                id: true,
+                                name: true,
+                                description: true,
+                            },
+                        },
+                    },
+                },
+
+                ambulance: {
+                    select: {
+                        id: true,
+                        registrationNo: true,
+                        model: true,
+                        manufacturer: true,
+                        status: true,
+                    },
+                },
+            },
+        }),
+
+        prisma.dispatch.count({
+            where,
+        }),
+    ]);
+
+    return {
+        data,
+        meta: {
+            page,
+            limit,
+            total,
+            totalPages: Math.ceil(total / limit),
+        },
+    };
+};
+
 export const driverService = {
   getAllDrivers,
   createDriver,
   getDriverById,
   deleteDriver,
   updateDriver,
-  updateDriverStatus
+  updateDriverStatus,
+  getDriverDispatches,
+  getMyProfile,
+  getMyDispatches
 };

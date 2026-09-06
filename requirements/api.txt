@@ -28,8 +28,8 @@ POST   /api/v1/drivers  //done
 GET    /api/v1/drivers/:id  //done
 PATCH  /api/v1/drivers/:id  //done
 PATCH  /api/v1/drivers/:id/status //dpme
-DELETE /api/v1/drivers/:id
-GET    /api/v1/drivers/:id/dispatches
+DELETE /api/v1/drivers/:id   //done
+GET    /api/v1/drivers/:id/dispatches //done
 GET    /api/v1/drivers/me
 PATCH  /api/v1/drivers/me
 
