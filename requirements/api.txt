@@ -19,7 +19,7 @@ DELETE /api/v1/users/:id  //done
 Patient module
 GET    /api/v1/patients/me  //done
 PATCH  /api/v1/patients/me  //done
-GET    /api/v1/patients/:id/emergency-requests
+GET    /api/v1/patients/:id/emergency-requests //done
 GET    /api/v1/patients/:id
 
 Driver module
@@ -43,11 +43,11 @@ PATCH  /api/v1/ambulances/:id/status //done
 PATCH  /api/v1/ambulances/:id/driver //done
 
 Ambulance type module
-GET    /api/v1/ambulance-types
+GET    /api/v1/ambulance-types //done
 POST   /api/v1/ambulance-types //done
-GET    /api/v1/ambulance-types/:id
-PATCH  /api/v1/ambulance-types/:id
-DELETE /api/v1/ambulance-types/:id
+GET    /api/v1/ambulance-types/:id //done
+PATCH  /api/v1/ambulance-types/:id  //done
+DELETE /api/v1/ambulance-types/:id  //done
 
 Service Type
 GET    /api/v1/service-types   //done
