@@ -33,6 +33,7 @@
     "express": "^5.2.1",
     "http-status": "^2.1.0",
     "jsonwebtoken": "^9.0.3",
+    "stripe": "^22.6.1",
     "tsx": "^4.23.13",
     "zod": "^4.5.4"
   }

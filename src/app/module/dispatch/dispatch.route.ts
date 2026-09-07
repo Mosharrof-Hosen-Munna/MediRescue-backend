@@ -18,6 +18,13 @@ router.post(
     validateRequest(createDispatchSchema),
     dispatchController.createDispatch
 );
+router.get(
+    "/my-dispatches",
+    auth(Role.DRIVER),
+    validateRequest(getMyDispatchesSchema),
+    dispatchController.getMyDispatches
+);
+
 
 router.get(
     "/:id",
@@ -34,17 +41,11 @@ router.patch(
 );
 
 router.post(
-    "/:id/accept",
+    "/:id/:status",
     auth(Role.DRIVER),
      validateRequest(updateDispatchActionSchema),
     dispatchController.updateDispatchAction
 );
 
-router.get(
-    "/my-dispatches",
-    auth(Role.DRIVER),
-    validateRequest(getMyDispatchesSchema),
-    dispatchController.getMyDispatches
-);
 
 export const dispatchRouter = router

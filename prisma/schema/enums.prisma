@@ -53,6 +53,22 @@ enum DispatchStatus {
   COMPLETED
   CANCELLED
 }
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  SUCCESS
+  FAILED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  BKASH
+  STRIPE
+  SSLCOMMERZ
+}
+
 enum EmergencyRequestStatus {
   PENDING
   ACCEPTED

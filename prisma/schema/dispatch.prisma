@@ -33,7 +33,7 @@ model Dispatch {
 
     // hospital           Hospital?      @relation(fields: [hospitalId],references: [id])
 
-    //   payment            Payment?
+      payment            Payment?
 
     @@index([ambulanceId])
     @@index([driverId])
