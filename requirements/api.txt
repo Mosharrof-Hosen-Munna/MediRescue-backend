@@ -60,9 +60,9 @@ Emergency Request module
 POST   /api/v1/emergency-requests  //done
 GET    /api/v1/emergency-requests   //done
 GET    /api/v1/emergency-requests/:id  //done
-PATCH  /api/v1/emergency-requests/:id
-PATCH  /api/v1/emergency-requests/:id/cancel
-GET    /api/v1/emergency-requests/my-requests
+PATCH  /api/v1/emergency-requests/:id  //done
+PATCH  /api/v1/emergency-requests/:id/cancel //done
+GET    /api/v1/emergency-requests/my-requests //done
 
 PATCH  /api/v1/emergency-requests/:id   this api may be update emergency request status update by driver and admin, cause other details can not be change after create request ,only change 
 

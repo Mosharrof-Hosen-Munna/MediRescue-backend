@@ -1,3 +1,5 @@
+import { EmergencyRequestStatus } from "../../../generated/prisma/enums";
+
 export interface ICreateEmergencyRequestPayload {
     serviceTypeId: string;
     ambulanceTypeId: string;
@@ -30,4 +32,10 @@ export interface IUpdateEmergencyRequestPayload {
 
 export interface ICancelEmergencyRequestPayload {
     cancellationReason?: string;
+}
+
+export interface IGetMyEmergencyRequestsQuery {
+    page?: string;
+    limit?: string;
+    status?: EmergencyRequestStatus;
 }

@@ -96,10 +96,29 @@ const cancelEmergencyRequest = catchAsync(
     }
 );
 
+const getMyEmergencyRequests = catchAsync(
+    async (req: Request, res: Response) => {
+        const result =
+            await emergencyRequestService.getMyEmergencyRequests(
+                req.user.userId,
+                req.query
+            );
+
+        sendResponse(res, {
+            statusCode: httpStatus.OK,
+            success: true,
+            message: "My emergency requests retrieved successfully",
+            data: result.data,
+            meta: result.meta,
+        });
+    }
+);
+
 export const emergencyRequestController = {
   createEmergencyRequest,
   getAllEmergencyRequests,
   getEmergencyRequestById,
   updateEmergencyRequest,
-  cancelEmergencyRequest
+  cancelEmergencyRequest,
+  getMyEmergencyRequests
 };

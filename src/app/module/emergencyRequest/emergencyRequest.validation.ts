@@ -131,3 +131,22 @@ export const cancelEmergencyRequestSchema = z.object({
             .optional(),
     }),
 });
+
+export const getMyEmergencyRequestsSchema = z.object({
+    query: z.object({
+        page: z.string().optional(),
+        limit: z.string().optional(),
+        status: z
+            .enum([
+                "PENDING",
+                "ACCEPTED",
+                "DISPATCHED",
+                "IN_PROGRESS",
+                "COMPLETED",
+                "CANCELLED",
+                "REJECTED",
+                "NO_AMBULANCE_AVAILABLE",
+            ])
+            .optional(),
+    }),
+});

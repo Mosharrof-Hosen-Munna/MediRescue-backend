@@ -1,7 +1,7 @@
 import { Router } from "express";
 
 import { emergencyRequestController } from "./emergencyRequest.controller";
-import { cancelEmergencyRequestSchema, createEmergencyRequestSchema, getEmergencyRequestByIdSchema, getEmergencyRequestsQuerySchema, updateEmergencyRequestSchema } from "./emergencyRequest.validation";
+import { cancelEmergencyRequestSchema, createEmergencyRequestSchema, getEmergencyRequestByIdSchema, getEmergencyRequestsQuerySchema, getMyEmergencyRequestsSchema, updateEmergencyRequestSchema } from "./emergencyRequest.validation";
 import { validateRequest } from "../../middleware/validateRequest";
 import { auth } from "../../middleware/authCheck";
 import { Role } from "../../../generated/prisma/enums";
@@ -40,6 +40,13 @@ router.patch(
     auth(Role.PATIENT, Role.ADMIN),
     validateRequest(cancelEmergencyRequestSchema),
     emergencyRequestController.cancelEmergencyRequest
+);
+
+router.get(
+    "/my-requests",
+    auth(Role.PATIENT),
+    validateRequest(getMyEmergencyRequestsSchema),
+    emergencyRequestController.getMyEmergencyRequests
 );
 
 export const emergencyRequestRouter = router;

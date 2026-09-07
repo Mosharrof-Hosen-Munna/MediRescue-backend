@@ -1,6 +1,6 @@
 import { Role } from './../../../generated/prisma/enums';
 import { prisma } from "../../lib/prisma";
-import { ICancelEmergencyRequestPayload, ICreateEmergencyRequestPayload, IGetEmergencyRequestByIdParams, IUpdateEmergencyRequestPayload } from "./emergencyRequest.interface";
+import { ICancelEmergencyRequestPayload, ICreateEmergencyRequestPayload, IGetEmergencyRequestByIdParams, IGetMyEmergencyRequestsQuery, IUpdateEmergencyRequestPayload } from "./emergencyRequest.interface";
 import { IGetEmergencyRequestsQuery } from "./emergencyRequest.interface";
 import { auditLogService } from '../auditLog/auditLog.service';
 
@@ -599,10 +599,135 @@ const cancelEmergencyRequest = async (
 
     return result;
 };
+
+const getMyEmergencyRequests = async (
+    userId: string,
+    query: IGetMyEmergencyRequestsQuery
+) => {
+    const page = Number(query.page) || 1;
+    const limit = Number(query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const patient = await prisma.patient.findUnique({
+        where: {
+            userId,
+        },
+        select: {
+            id: true,
+            isDeleted: true,
+        },
+    });
+
+    if (!patient) {
+        throw new Error("Patient profile not found");
+    }
+
+    if (patient.isDeleted) {
+        throw new Error("Patient profile is deleted");
+    }
+
+    const where = {
+        patientId: patient.id,
+        ...(query.status && {
+            status: query.status,
+        }),
+    };
+
+    const [data, total] = await Promise.all([
+        prisma.emergencyRequest.findMany({
+            where,
+            skip,
+            take: limit,
+            orderBy: {
+                requestedAt: "desc",
+            },
+            select: {
+                id: true,
+                requestNumber: true,
+                pickupAddress: true,
+                emergencyDescription: true,
+                patientCondition: true,
+                additionalNotes: true,
+                status: true,
+                requestedAt: true,
+                cancelledAt: true,
+                cancellationReason: true,
+                createdAt: true,
+                updatedAt: true,
+
+                serviceType: {
+                    select: {
+                        id: true,
+                        name: true,
+                        description: true,
+                    },
+                },
+
+                ambulanceType: {
+                    select: {
+                        id: true,
+                        name: true,
+                        description: true,
+                        baseFare: true,
+                    },
+                },
+
+                dispatch: {
+                    select: {
+                        id: true,
+                        status: true,
+                        assignedAt: true,
+                        acceptedAt: true,
+                        arrivedAt: true,
+                        pickedUpAt: true,
+                        hospitalArrivedAt: true,
+                        completedAt: true,
+                        cancelledAt: true,
+
+                        ambulance: {
+                            select: {
+                                id: true,
+                                registrationNo: true,
+                                model: true,
+                                manufacturer: true,
+                                status: true,
+                            },
+                        },
+
+                        driver: {
+                            select: {
+                                id: true,
+                                firstName: true,
+                                lastName: true,
+                                phone: true,
+                                employeeId: true,
+                            },
+                        },
+                    },
+                },
+            },
+        }),
+
+        prisma.emergencyRequest.count({
+            where,
+        }),
+    ]);
+
+    return {
+        data,
+        meta: {
+            page,
+            limit,
+            total,
+            totalPages: Math.ceil(total / limit),
+        },
+    };
+};
 export const emergencyRequestService = {
   getAllEmergencyRequests,
   createEmergencyRequest,
   getEmergencyRequestById,
   updateEmergencyRequest,
-  cancelEmergencyRequest
+  cancelEmergencyRequest,
+  getMyEmergencyRequests
 };
