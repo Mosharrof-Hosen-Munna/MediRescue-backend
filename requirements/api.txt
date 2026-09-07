@@ -74,8 +74,8 @@ GET /api/v1/emergency-requests?status=COMPLETED
 Dispatch module
 POST   /api/v1/dispatches  //done
 GET    /api/v1/dispatches  //done
-GET    /api/v1/dispatches/:id
-PATCH  /api/v1/dispatches/:id
+GET    /api/v1/dispatches/:id  //done
+PATCH  /api/v1/dispatches/:id  //done
 
 Driver actions:
 POST   /api/v1/dispatches/:id/assign
@@ -83,4 +83,4 @@ POST   /api/v1/dispatches/:id/accept //done
 status update POST   /api/v1/dispatches/:id/reject
 
 Driver's dispatches:
-GET /api/v1/dispatches/my-dispatches
+GET /api/v1/dispatches/my-dispatches  //done

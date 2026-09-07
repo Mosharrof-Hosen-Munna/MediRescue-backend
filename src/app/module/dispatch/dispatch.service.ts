@@ -2,7 +2,7 @@ import { Prisma } from "../../../generated/prisma/client";
 import { DispatchStatus } from "../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
 import { auditLogService } from "../auditLog/auditLog.service";
-import type {  ICreateDispatchPayload, IGetDispatchesQuery, IUpdateDispatchActionPayload, IUpdateDispatchPayload } from "./dispatch.interface";
+import type {  ICreateDispatchPayload, IGetDispatchesQuery, IGetMyDispatchesQuery, IUpdateDispatchActionPayload, IUpdateDispatchPayload } from "./dispatch.interface";
 
 const createDispatch = async (
     userId: string,
@@ -993,6 +993,137 @@ const updateDispatchAction = async (
     return result;
 };
 
+const getMyDispatches = async (
+    userId: string,
+    query: IGetMyDispatchesQuery
+    
+) => {
+    const page = Number(query.page) || 1;
+    const limit = Number(query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const driver = await prisma.driver.findFirst({
+        where: {
+            userId,
+            isDeleted: false,
+        },
+        select: {
+            id: true,
+        },
+    });
+
+    if (!driver) {
+        throw new Error("Driver not found");
+    }
+
+    const where = {
+        driverId: driver.id,
+        ...(query.status && {
+            status: query.status,
+        }),
+    };
+
+    const [data, total] = await Promise.all([
+        prisma.dispatch.findMany({
+            where,
+            skip,
+            take: limit,
+            orderBy: {
+                assignedAt: "desc",
+            },
+            select: {
+                id: true,
+                status: true,
+                assignedAt: true,
+                acceptedAt: true,
+                arrivedAt: true,
+                pickedUpAt: true,
+                hospitalArrivedAt: true,
+                completedAt: true,
+                cancelledAt: true,
+                cancellationReason: true,
+
+                emergencyRequest: {
+                    select: {
+                        id: true,
+                        requestNumber: true,
+                        pickupAddress: true,
+                        emergencyDescription: true,
+                        patientCondition: true,
+                        additionalNotes: true,
+                        status: true,
+                        requestedAt: true,
+
+                        patient: {
+                            select: {
+                                id: true,
+                                firstName: true,
+                                lastName: true,
+                                phone: true,
+                                dateOfBirth: true,
+                                gender: true,
+                                bloodGroup: true,
+                                emergencyContactName: true,
+                                emergencyContactPhone: true,
+                            },
+                        },
+
+                        serviceType: {
+                            select: {
+                                id: true,
+                                name: true,
+                                description: true,
+                            },
+                        },
+
+                        ambulanceType: {
+                            select: {
+                                id: true,
+                                name: true,
+                                description: true,
+                                baseFare: true,
+                            },
+                        },
+                    },
+                },
+
+                ambulance: {
+                    select: {
+                        id: true,
+                        registrationNo: true,
+                        model: true,
+                        manufacturer: true,
+                        year: true,
+                        capacity: true,
+
+                        type: {
+                            select: {
+                                id: true,
+                                name: true,
+                                description: true,
+                                baseFare: true,
+                            },
+                        },
+                    },
+                },
+            },
+        }),
+
+        prisma.dispatch.count({
+            where,
+        }),
+    ]);
+
+    return {
+        data,
+        meta: {
+            page,
+            limit,
+            total,
+            totalPages: Math.ceil(total / limit),
+        },
+    };
+};
 
 
 export const dispatchService = {
@@ -1000,5 +1131,6 @@ export const dispatchService = {
     getDispatches,
     getDispatchById,
     updateDispatch,
-    updateDispatchAction
+    updateDispatchAction,
+    getMyDispatches
 };

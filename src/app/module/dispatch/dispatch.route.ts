@@ -3,7 +3,7 @@ import { Role } from "../../../generated/prisma/enums";
 import { auth } from "../../middleware/authCheck";
 import { validateRequest } from "../../middleware/validateRequest";
 import { dispatchController } from "./dispatch.controller";
-import {  createDispatchSchema, getDispatchByIdSchema, getDispatchesSchema, updateDispatchActionSchema, updateDispatchSchema } from "./dispatch.validation";
+import {  createDispatchSchema, getDispatchByIdSchema, getDispatchesSchema, getMyDispatchesSchema, updateDispatchActionSchema, updateDispatchSchema } from "./dispatch.validation";
 const router = Router()
 
 router.get(
@@ -38,6 +38,13 @@ router.post(
     auth(Role.DRIVER),
      validateRequest(updateDispatchActionSchema),
     dispatchController.updateDispatchAction
+);
+
+router.get(
+    "/my-dispatches",
+    auth(Role.DRIVER),
+    validateRequest(getMyDispatchesSchema),
+    dispatchController.getMyDispatches
 );
 
 export const dispatchRouter = router

@@ -79,11 +79,28 @@ const updateDispatchAction = catchAsync(
         });
     }
 );
+const getMyDispatches = catchAsync(
+    async (req: Request, res: Response) => {
+        const result = await dispatchService.getMyDispatches(
+            req.user.userId,
+            req.query
+        );
+
+        sendResponse(res, {
+            statusCode: httpStatus.OK,
+            success: true,
+            message: "My dispatches retrieved successfully",
+            data: result.data,
+            meta: result.meta,
+        });
+    }
+);
 
 export const dispatchController = {
   createDispatch,
   getDispatches,
   getDispatchById,
   updateDispatch,
-  updateDispatchAction
+  updateDispatchAction,
+getMyDispatches
 };

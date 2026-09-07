@@ -26,3 +26,9 @@ export interface IUpdateDispatchActionPayload {
     status: DispatchAction;
     rejectionReason?: string;
 }
+
+export interface IGetMyDispatchesQuery {
+    page?: string;
+    limit?: string;
+    status?: DispatchStatus;
+}

@@ -90,3 +90,23 @@ export const updateDispatchActionSchema = z.object({
             .optional(),
     }),
 });
+
+export const getMyDispatchesSchema = z.object({
+    query: z.object({
+        page: z.string().optional(),
+        limit: z.string().optional(),
+        status: z
+            .enum([
+                "ASSIGNED",
+                "ACCEPTED",
+                "REJECTED",
+                "EN_ROUTE",
+                "ARRIVED",
+                "PATIENT_PICKED_UP",
+                "AT_HOSPITAL",
+                "COMPLETED",
+                "CANCELLED",
+            ])
+            .optional(),
+    }),
+});
