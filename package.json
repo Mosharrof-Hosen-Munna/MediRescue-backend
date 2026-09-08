@@ -7,6 +7,9 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "start": "node dist/src/server.js",
+    "format:check": "npx @biomejs/biome format ./src",
+    "format:write": "npx @biomejs/biome format --write ./src",
+    "lint:check": "npx @biomejs/biome lint ./src ",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -32,6 +35,7 @@
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "google-auth-library": "^11.0.2",
     "http-status": "^2.1.0",
     "jsonwebtoken": "^9.0.3",
     "stripe": "^22.6.1",

@@ -1,41 +1,40 @@
 import { EmergencyRequestStatus } from "../../../generated/prisma/enums";
 
 export interface ICreateEmergencyRequestPayload {
-    serviceTypeId: string;
-    ambulanceTypeId: string;
-    pickupAddress: string;
-    emergencyDescription?: string;
-    patientCondition?: string;
-    additionalNotes?: string;
+	serviceTypeId: string;
+	ambulanceTypeId: string;
+	pickupAddress: string;
+	emergencyDescription?: string;
+	patientCondition?: string;
+	additionalNotes?: string;
 }
 
 export interface IGetEmergencyRequestsQuery {
-    page?: string;
-    limit?: string;
-    status?: string;
-    search?: string;
+	page?: string;
+	limit?: string;
+	status?: string;
+	search?: string;
 }
 
 export interface IGetEmergencyRequestByIdParams {
-    id: string;
+	id: string;
 }
 
-
 export interface IUpdateEmergencyRequestPayload {
-    serviceTypeId?: string;
-    ambulanceTypeId?: string;
-    pickupAddress?: string;
-    emergencyDescription?: string;
-    patientCondition?: string;
-    additionalNotes?: string;
+	serviceTypeId?: string;
+	ambulanceTypeId?: string;
+	pickupAddress?: string;
+	emergencyDescription?: string;
+	patientCondition?: string;
+	additionalNotes?: string;
 }
 
 export interface ICancelEmergencyRequestPayload {
-    cancellationReason?: string;
+	cancellationReason?: string;
 }
 
 export interface IGetMyEmergencyRequestsQuery {
-    page?: string;
-    limit?: string;
-    status?: EmergencyRequestStatus;
+	page?: string;
+	limit?: string;
+	status?: EmergencyRequestStatus;
 }

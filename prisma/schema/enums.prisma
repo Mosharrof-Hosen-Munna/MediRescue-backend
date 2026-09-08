@@ -3,6 +3,10 @@ enum Role {
   DRIVER
   ADMIN
 }
+enum AuthProvider {
+  CREDENTIALS
+  GOOGLE
+}
 
 enum UserStatus {
   ACTIVE

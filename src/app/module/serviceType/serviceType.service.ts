@@ -1,88 +1,87 @@
 import { prisma } from "../../lib/prisma";
-import { ICreateServiceTypePayload, IGetServiceTypesQuery } from "./serviceType.interface";
+import {
+	ICreateServiceTypePayload,
+	IGetServiceTypesQuery,
+} from "./serviceType.interface";
 
-const createServiceType = async (
-    payload: ICreateServiceTypePayload
-) => {
-    const { name, description } = payload;
+const createServiceType = async (payload: ICreateServiceTypePayload) => {
+	const { name, description } = payload;
 
-    // Check if service type already exists
-    const existingServiceType = await prisma.serviceType.findUnique({
-        where: {
-            name,
-        },
-    });
+	// Check if service type already exists
+	const existingServiceType = await prisma.serviceType.findUnique({
+		where: {
+			name,
+		},
+	});
 
-    if (existingServiceType) {
-        throw new Error("Service type already exists");
-    }
+	if (existingServiceType) {
+		throw new Error("Service type already exists");
+	}
 
-    // Create service type
-    const serviceType = await prisma.serviceType.create({
-        data: {
-            name,
-            description,
-        },
-    });
+	// Create service type
+	const serviceType = await prisma.serviceType.create({
+		data: {
+			name,
+			description,
+		},
+	});
 
-    return serviceType;
+	return serviceType;
 };
 
-const getAllServiceTypes = async (
-    query: IGetServiceTypesQuery
-) => {
-    const page = Number(query.page) || 1;
-    const limit = Number(query.limit) || 10;
-    const skip = (page - 1) * limit;
+const getAllServiceTypes = async (query: IGetServiceTypesQuery) => {
+	const page = Number(query.page) || 1;
+	const limit = Number(query.limit) || 10;
+	const skip = (page - 1) * limit;
 
-    const where = {
-        isActive: true,
+	const where = {
+		isActive: true,
 
-        ...(query.search && {
-            OR: [
-                {
-                    name: {
-                        contains: query.search,
-                        mode: "insensitive" as const,
-                    },
-                },
-                {
-                    description: {
-                        contains: query.search,
-                        mode: "insensitive" as const,
-                    },
-                },
-            ],
-        }),
-    };
+		...(query.search && {
+			OR: [
+				{
+					name: {
+						contains: query.search,
+						mode: "insensitive" as const,
+					},
+				},
+				{
+					description: {
+						contains: query.search,
+						mode: "insensitive" as const,
+					},
+				},
+			],
+		}),
+	};
 
-    const [serviceTypes, total] = await prisma.$transaction([
-        prisma.serviceType.findMany({
-            where,
-            skip,
-            take: limit,
-            orderBy: {
-                createdAt: "desc",
-            },
-        }),
+	const [serviceTypes, total] = await prisma.$transaction([
+		prisma.serviceType.findMany({
+			where,
+			skip,
+			take: limit,
+			orderBy: {
+				createdAt: "desc",
+			},
+		}),
 
-        prisma.serviceType.count({
-            where,
-        }),
-    ]);
+		prisma.serviceType.count({
+			where,
+		}),
+	]);
 
-    return {
-        data: serviceTypes,
-        meta: {
-            page,
-            limit,
-            total,
-            totalPages: Math.ceil(total / limit),
-        },
-    };
+	return {
+		data: serviceTypes,
+		meta: {
+			page,
+			limit,
+			total,
+			totalPages: Math.ceil(total / limit),
+		},
+	};
 };
 
 export const serviceTypeService = {
-    createServiceType,
-    getAllServiceTypes
+	createServiceType,
+	getAllServiceTypes,
 };

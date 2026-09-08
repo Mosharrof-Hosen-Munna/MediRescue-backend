@@ -1,4 +1,4 @@
 export interface ICreateCheckoutPayload {
-    dispatchId: string;
-    userId: string;
+	dispatchId: string;
+	userId: string;
 }
