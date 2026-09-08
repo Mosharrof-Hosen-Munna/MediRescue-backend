@@ -12,5 +12,9 @@ router.post(
     validateRequest(createCheckoutSchema),
     paymentController.createCheckoutSession
 );
+router.post(
+    "/webhook",
+    paymentController.stripeWebhook
+);
 
 export const paymentRouter = router

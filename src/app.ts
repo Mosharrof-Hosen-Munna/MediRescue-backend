@@ -24,6 +24,16 @@ app.use(
         credentials: true,
     }),
 )
+app.use(
+    "/api/v1/payment/webhook",
+    express.raw({ type: "application/json" })
+);
+
+console.log(
+    "Webhook secret:",
+    process.env.STRIPE_WEBHOOK_SECRET
+);
+
 
 // Enable URL-encoded form data parsing
 app.use(express.urlencoded({ extended: true }))
