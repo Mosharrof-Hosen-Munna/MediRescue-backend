@@ -19,6 +19,7 @@ import { userRouter } from "./app/module/user/user.route";
 import { patientRouter } from "./app/module/patient/patient.route";
 import { dispatchRouter } from "./app/module/dispatch/dispatch.route";
 import { paymentRouter } from "./app/module/payment/payment.route";
+import { auditLogRouter } from "./app/module/auditLog/auditLog.route";
 
 const app: Application = express();
 
@@ -49,6 +50,7 @@ app.use("/api/v1/drivers", driverRouter);
 app.use("/api/v1/patients", patientRouter);
 app.use("/api/v1/dispatches", dispatchRouter);
 app.use("/api/v1/payment", paymentRouter);
+app.use('/api/v1/audit-logs', auditLogRouter);
 
 // Basic route
 app.get("/", async (req: Request, res: Response) => {
