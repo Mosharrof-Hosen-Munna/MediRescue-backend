@@ -1,3 +1,4 @@
+import  httpStatus  from 'http-status';
 import type { NextFunction, Request, Response } from "express";
 import type { JwtPayload } from "jsonwebtoken";
 import type { Role } from "../../generated/prisma/enums";
@@ -5,6 +6,7 @@ import config from "../config";
 import { prisma } from "../lib/prisma";
 import { catchAsync } from "../utils/catchAsync";
 import { jwtUtils } from "../utils/jwt";
+import { sendResponse } from "../utils/sendResponse";
 
 declare global {
 	namespace Express {
@@ -44,9 +46,14 @@ export const auth = (...requiredRoles: Role[]) => {
 			verifiedToken.data as JwtPayload;
 
 		if (requiredRoles.length && !requiredRoles.includes(role)) {
-			throw new Error(
-				"Forbidden. You don't have permission to access this resource.",
-			);
+			 sendResponse(res, {
+        statusCode: httpStatus.FORBIDDEN,
+        success: false,
+        message: "You are not authorized to access this resource",
+        data: null,
+    });
+
+    return;
 		}
 
 		const user = await prisma.user.findUnique({

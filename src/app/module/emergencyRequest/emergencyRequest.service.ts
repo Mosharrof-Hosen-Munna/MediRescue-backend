@@ -96,7 +96,9 @@ const createEmergencyRequest = async (
 	return emergencyRequest;
 };
 
-const getAllEmergencyRequests = async (query: IGetEmergencyRequestsQuery) => {
+const getAllEmergencyRequests = async (
+	query: IGetEmergencyRequestsQuery,
+) => {
 	const page = Number(query.page) || 1;
 	const limit = Number(query.limit) || 10;
 	const skip = (page - 1) * limit;
@@ -105,6 +107,31 @@ const getAllEmergencyRequests = async (query: IGetEmergencyRequestsQuery) => {
 		...(query.status && {
 			status: query.status as any,
 		}),
+
+		...(query.serviceTypeId && {
+			serviceTypeId: query.serviceTypeId,
+		}),
+
+		...(query.ambulanceTypeId && {
+			ambulanceTypeId: query.ambulanceTypeId,
+		}),
+
+		...(query.patientId && {
+			patientId: query.patientId,
+		}),
+
+		...(query.dateFrom || query.dateTo
+			? {
+					requestedAt: {
+						...(query.dateFrom && {
+							gte: new Date(query.dateFrom),
+						}),
+						...(query.dateTo && {
+							lte: new Date(query.dateTo),
+						}),
+					},
+				}
+			: {}),
 
 		...(query.search && {
 			OR: [
@@ -116,6 +143,12 @@ const getAllEmergencyRequests = async (query: IGetEmergencyRequestsQuery) => {
 				},
 				{
 					pickupAddress: {
+						contains: query.search,
+						mode: "insensitive" as const,
+					},
+				},
+				{
+					emergencyDescription: {
 						contains: query.search,
 						mode: "insensitive" as const,
 					},
@@ -227,7 +260,6 @@ const getAllEmergencyRequests = async (query: IGetEmergencyRequestsQuery) => {
 		},
 	};
 };
-
 const getEmergencyRequestById = async (
 	id: string,
 	userId: string,

@@ -12,8 +12,16 @@ export interface ICreateEmergencyRequestPayload {
 export interface IGetEmergencyRequestsQuery {
 	page?: string;
 	limit?: string;
-	status?: string;
 	search?: string;
+
+	status?: EmergencyRequestStatus;
+
+	serviceTypeId?: string;
+	ambulanceTypeId?: string;
+	patientId?: string;
+
+	dateFrom?: string;
+	dateTo?: string;
 }
 
 export interface IGetEmergencyRequestByIdParams {

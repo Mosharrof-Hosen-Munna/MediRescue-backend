@@ -29,6 +29,13 @@ router.get(
 );
 
 router.get(
+	"/my-requests",
+	auth(Role.PATIENT),
+	validateRequest(getMyEmergencyRequestsSchema),
+	emergencyRequestController.getMyEmergencyRequests,
+);
+
+router.get(
 	"/:id",
 	auth(Role.PATIENT, Role.ADMIN),
 	validateRequest(getEmergencyRequestByIdSchema),
@@ -49,11 +56,6 @@ router.patch(
 	emergencyRequestController.cancelEmergencyRequest,
 );
 
-router.get(
-	"/my-requests",
-	auth(Role.PATIENT),
-	validateRequest(getMyEmergencyRequestsSchema),
-	emergencyRequestController.getMyEmergencyRequests,
-);
+
 
 export const emergencyRequestRouter = router;

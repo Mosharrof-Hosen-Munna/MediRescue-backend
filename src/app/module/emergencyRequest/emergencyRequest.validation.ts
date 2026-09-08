@@ -40,6 +40,19 @@ export const getEmergencyRequestsQuerySchema = z.object({
 
 		status: z.nativeEnum(EmergencyRequestStatus).optional(),
 
+		serviceTypeId: z.string().uuid("Invalid service type ID").optional(),
+
+		ambulanceTypeId: z
+			.string()
+			.uuid("Invalid ambulance type ID")
+			.optional(),
+
+		patientId: z.string().uuid("Invalid patient ID").optional(),
+
+		dateFrom: z.coerce.date().optional(),
+
+		dateTo: z.coerce.date().optional(),
+
 		search: z.string().trim().optional(),
 	}),
 });
