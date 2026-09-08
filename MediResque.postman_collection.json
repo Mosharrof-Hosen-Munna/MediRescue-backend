@@ -1,0 +1,940 @@
+{
+  "info": {
+    "_postman_id": "b69e6019-e86b-40bd-a4d6-805a9e1f0484",
+    "name": "MediResque",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "15790254"
+  },
+  "item": [
+    {
+      "name": "auth",
+      "item": [
+        {
+          "name": "registerPatient",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"firstName\": \"Admin\",\r\n  \"lastName\": \"Ahmed\",\r\n  \"phone\": \"01712345678\",\r\n  \"email\": \"admin@admin.com\",\r\n  \"password\": \"admin1234\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "loginUser",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"admin@admin.com\",\r\n    \"password\":\"admin1234\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getMe",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "google registration",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/google",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "google"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "ambulanceType",
+      "item": [
+        {
+          "name": "createAmbulanceType",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"ICU Ambulance\",\r\n  \"description\": \"Mobile intensive care unit equipped for patients requiring continuous critical care during transportation\",\r\n  \"baseFare\": 4000\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/ambulance-types",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "ambulance-types"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getAmbulanceTypes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/ambulance-types",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "ambulance-types"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getTypesById",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/ambulance-types/4490d65a-b16e-45f9-b3b6-531e1f6fba16",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "ambulance-types",
+                "4490d65a-b16e-45f9-b3b6-531e1f6fba16"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UpdateAmbulanceType",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n   \"name\": \"ICU Ambulance 1\",\r\n            \"description\": \"Mobile intensive care unit equipped for patients requiring continuous critical care during transportation\",\r\n            \"baseFare\": \"4000\",\r\n            \"isActive\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/ambulance-types/4490d65a-b16e-45f9-b3b6-531e1f6fba16",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "ambulance-types",
+                "4490d65a-b16e-45f9-b3b6-531e1f6fba16"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "deleteAmbulanceType",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/ambulance-types/4490d65a-b16e-45f9-b3b6-531e1f6fba16",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "ambulance-types",
+                "4490d65a-b16e-45f9-b3b6-531e1f6fba16"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "serviceType",
+      "item": [
+        {
+          "name": "createServiceType",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Discharge Transport\",\r\n  \"description\": \"Safe ambulance transportation for patients being discharged from a hospital to their home or another healthcare facility\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/service-types",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "service-types"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getAllServiceTypes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "emergencyRequest",
+      "item": [
+        {
+          "name": "createEmergencyRequest",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"serviceTypeId\": \"cb1bf811-c5ba-4430-bbb5-14389ac179a7\",\r\n  \"ambulanceTypeId\": \"4490d65a-b16e-45f9-b3b6-531e1f6fba16\",\r\n  \"pickupAddress\": \"House 12, Road 5, Dhanmondi, Dhaka\",\r\n  \"emergencyDescription\": \"Patient injured in a road accident\",\r\n  \"patientCondition\": \"Patient is conscious but needs urgent transportation\",\r\n  \"additionalNotes\": \"Please respond quickly\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/emergency-requests",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "emergency-requests"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "EmergencyRequestById",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetAllEmergencyRequest",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "updateEmergency",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "cancelEmergency",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "myEmergencies",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "ambulance",
+      "item": [
+        {
+          "name": "getAllAmbulances",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/ambulances",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "ambulances"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "createAmbulance",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"registrationNo\": \"DHAKA-AMB-005\",\r\n  \"model\": \"Sprinter 519 CDI\",\r\n  \"manufacturer\": \"Mercedes-Benz\",\r\n  \"year\": 2025,\r\n  \"capacity\": 4,\r\n  \"typeId\": \"4490d65a-b16e-45f9-b3b6-531e1f6fba16\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/ambulances",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "ambulances"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getSingleAmbulance",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "updateAmbulanceStatus",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"status\": \"ON_TRIP\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/ambulances/83964a7a-c7fd-47fc-8692-0db016a0d8f1/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "ambulances",
+                "83964a7a-c7fd-47fc-8692-0db016a0d8f1",
+                "status"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "updateAmbulanceDriver",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"driverId\": \"50c82954-8879-42fb-89ef-21301e4f4c8a\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/ambulances/83964a7a-c7fd-47fc-8692-0db016a0d8f1/driver",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "ambulances",
+                "83964a7a-c7fd-47fc-8692-0db016a0d8f1",
+                "driver"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "updateAmbulance",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/ambulances/83964a7a-c7fd-47fc-8692-0db016a0d8f1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "ambulances",
+                "83964a7a-c7fd-47fc-8692-0db016a0d8f1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "deleteAmbulance",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/ambulances/83964a7a-c7fd-47fc-8692-0db016a0d8f1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "ambulances",
+                "83964a7a-c7fd-47fc-8692-0db016a0d8f1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "driver",
+      "item": [
+        {
+          "name": "createDriver",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"firstName\": \"Rahim\",\r\n  \"lastName\": \"Ahmed\",\r\n  \"phone\": \"01712345678\",\r\n  \"email\": \"rahim.driver@mediresque.com\",\r\n  \"password\": \"Driver@12345\",\r\n  \"dateOfBirth\": \"1995-05-15T00:00:00.000Z\",\r\n  \"gender\": \"MALE\",\r\n  \"address\": \"Dhanmondi, Dhaka\",\r\n  \"employeeId\": \"DRV-001\",\r\n  \"licenseNumber\": \"DL-DHK-10001\",\r\n  \"licenseExpiryDate\": \"2028-05-15T00:00:00.000Z\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/drivers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "drivers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getAllDrivers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getSingleDriver",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "updateDriver",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete Driver",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/drivers/50c82954-8879-42fb-89ef-21301e4f4c8a",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "drivers",
+                "50c82954-8879-42fb-89ef-21301e4f4c8a"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "user",
+      "item": [
+        {
+          "name": "getMe",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getAllUsers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getUserById",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "updateUserEmail",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"newemail@example.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "updateUserStatus",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/fdf1fb0b-1a8c-4a20-854c-cae81aca6dd8/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "fdf1fb0b-1a8c-4a20-854c-cae81aca6dd8",
+                "status"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "deleteUser",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/fdf1fb0b-1a8c-4a20-854c-cae81aca6dd8",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "fdf1fb0b-1a8c-4a20-854c-cae81aca6dd8"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "upload-profile-photo",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "profilePhoto",
+                  "type": "file",
+                  "src": [
+                    "/C:/Users/Hi/Downloads/IMG_20220617_093657.jpg"
+                  ]
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/profile-photo",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "profile-photo"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "dispatch",
+      "item": [
+        {
+          "name": "get all dispatches",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"admin@admin.com\",\r\n    \"password\":\"admin1234\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/dispatches",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "dispatches"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "create dispatch",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"emergencyRequestId\": \"4c2c6f14-77f0-4f1f-a914-2a4964f0af29\",\r\n  \"ambulanceId\": \"83964a7a-c7fd-47fc-8692-0db016a0d8f1\",\r\n  \"driverId\": \"50c82954-8879-42fb-89ef-21301e4f4c8a\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/dispatches",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "dispatches"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get Single dispatch",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update dispatch",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "accept dispatch",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"status\" : \"accept\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/dispatches/b40a4528-4870-4ebf-b5fc-12b60ce26e55/accept",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "dispatches",
+                "b40a4528-4870-4ebf-b5fc-12b60ce26e55",
+                "accept"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get my dispatches",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/dispatches/my-dispatches",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "dispatches",
+                "my-dispatches"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "payment",
+      "item": [
+        {
+          "name": "checkout",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Patients",
+      "item": [
+        {
+          "name": "getPatient",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "AuditLog",
+      "item": [
+        {
+          "name": "get-audit-logs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

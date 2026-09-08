@@ -10,6 +10,8 @@ const createEmergencyRequest = catchAsync(
 	async (req: Request, res: Response) => {
 		const userId = req.user?.userId as string;
 
+		console.log(req.body)
+
 		const result = await emergencyRequestService.createEmergencyRequest(
 			userId,
 			req.body,
