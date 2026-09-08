@@ -1,9 +1,9 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 import httpStatus from "http-status";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import { dispatchService } from "./dispatch.service";
-import { DispatchAction } from "./dispatch.interface";
+import type { DispatchAction } from "./dispatch.interface";
 
 const createDispatch = catchAsync(async (req: Request, res: Response) => {
 	const result = await dispatchService.createDispatch(
@@ -87,7 +87,6 @@ const getMyDispatches = catchAsync(async (req: Request, res: Response) => {
 		meta: result.meta,
 	});
 });
-
 
 export const dispatchController = {
 	createDispatch,

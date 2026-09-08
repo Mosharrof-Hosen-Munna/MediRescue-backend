@@ -2,8 +2,8 @@ import httpStatus from "http-status";
 import { sendResponse } from "../../utils/sendResponse";
 import { catchAsync } from "../../utils/catchAsync";
 import { userService } from "./user.service";
-import { Request, Response } from "express";
-import { IGetUsersQuery } from "./user.interface";
+import type { Request, Response } from "express";
+import type { IGetUsersQuery } from "./user.interface";
 
 const getMyProfile = catchAsync(async (req: Request, res: Response) => {
 	const result = await userService.getMyProfile(req.user.userId);
@@ -79,6 +79,25 @@ const deleteUser = catchAsync(async (req: Request, res: Response) => {
 	});
 });
 
+const updateProfilePhoto = catchAsync(async (req: Request, res: Response) => {
+	console.log("File received:", req.file); 
+	if(!req.file?.buffer) {
+		throw new Error("No file uploaded");
+	}
+
+	const result = await userService.updateProfilePhoto(
+		req.file?.buffer as Buffer,
+		req.user ,
+	);
+
+	sendResponse(res, {
+		statusCode: httpStatus.OK,
+		success: true,
+		message: "Profile photo updated successfully",
+		data: result,
+	});
+})
+
 export const userController = {
 	getMyProfile,
 	updateMyProfile,
@@ -86,4 +105,5 @@ export const userController = {
 	getUserById,
 	updateUserStatus,
 	deleteUser,
+	updateProfilePhoto
 };

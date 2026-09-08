@@ -1,4 +1,4 @@
-import { UserStatus } from "../../../generated/prisma/enums";
+import type { UserStatus } from "../../../generated/prisma/enums";
 
 export interface IUpdateMyProfilePayload {
 	email?: string;

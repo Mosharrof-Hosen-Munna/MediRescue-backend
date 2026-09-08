@@ -1,5 +1,5 @@
-import { AuditAction } from "../../../generated/prisma/enums";
-import { Prisma } from "../../../generated/prisma/client";
+import type { AuditAction } from "../../../generated/prisma/enums";
+import type { Prisma } from "../../../generated/prisma/client";
 
 export interface ICreateAuditLogPayload {
 	userId?: string;

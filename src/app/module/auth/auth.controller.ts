@@ -1,9 +1,9 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 import { AuthService } from "./auth.service";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import httpStatus from "http-status";
-import { IRequestUser } from "./auth.interface";
+import type { IRequestUser } from "./auth.interface";
 
 const registerPatient = catchAsync(async (req: Request, res: Response) => {
 	const payload = req.body;
@@ -84,7 +84,7 @@ const getMe = catchAsync(async (req: Request, res: Response) => {
 
 const googleLogin = catchAsync(async (req: Request, res: Response) => {
 	const result = await AuthService.googleLogin(req.body.token);
-const { accessToken, refreshToken } = result;
+	const { accessToken, refreshToken } = result;
 
 	res.cookie("accessToken", accessToken, {
 		httpOnly: true,
@@ -114,5 +114,5 @@ export const AuthController = {
 	registerPatient,
 	loginUser,
 	getMe,
-	googleLogin
+	googleLogin,
 };

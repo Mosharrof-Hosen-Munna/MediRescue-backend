@@ -1,4 +1,4 @@
-import { Gender, Role } from "../../../generated/prisma/enums";
+import type { Gender, Role } from "../../../generated/prisma/enums";
 
 export interface ILoginUserPayload {
 	email: string;

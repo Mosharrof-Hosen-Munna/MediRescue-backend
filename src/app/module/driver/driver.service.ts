@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import { prisma } from "../../lib/prisma";
-import {
+import type {
 	ICreateDriverPayload,
 	IGetDriverDispatchesQuery,
 	IGetDriversQuery,

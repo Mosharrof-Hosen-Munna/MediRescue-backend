@@ -1,5 +1,5 @@
 import httpStatus from "http-status";
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import { patientService } from "./patient.service";

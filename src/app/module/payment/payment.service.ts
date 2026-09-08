@@ -1,8 +1,8 @@
-import Stripe from "stripe";
+import type Stripe from "stripe";
 import { PaymentStatus } from "../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
 import { stripe } from "../../lib/stripe";
-import { ICreateCheckoutPayload } from "./payment.interface";
+import type { ICreateCheckoutPayload } from "./payment.interface";
 
 const createCheckoutSession = async (payload: ICreateCheckoutPayload) => {
 	const dispatch = await prisma.dispatch.findUnique({
@@ -35,11 +35,9 @@ const createCheckoutSession = async (payload: ICreateCheckoutPayload) => {
 		throw new Error("Dispatch not found");
 	}
 
-	// if (dispatch.emergencyRequest.patient.userId !== payload.userId) {
-	//     throw new Error(
-	//         "You are not allowed to pay for this dispatch"
-	//     );
-	// }
+	if (dispatch.emergencyRequest.patient.userId !== payload.userId) {
+		throw new Error("You are not allowed to pay for this dispatch");
+	}
 
 	if (dispatch.status !== "COMPLETED") {
 		throw new Error("Payment is only available for completed dispatches");
@@ -50,17 +48,17 @@ const createCheckoutSession = async (payload: ICreateCheckoutPayload) => {
 			throw new Error("Payment has already been completed");
 		}
 
-		// if (dispatch.payment.providerSessionId) {
-		//   const existingSession = await stripe.checkout.sessions.retrieve(
-		//     dispatch.payment.providerSessionId,
-		//   );
+		if (dispatch.payment.providerSessionId) {
+			const existingSession = await stripe.checkout.sessions.retrieve(
+				dispatch.payment.providerSessionId,
+			);
 
-		//   return {
-		//     payment: dispatch.payment,
-		//     checkoutUrl: existingSession.url,
-		//     message: "Checkout session already exists",
-		//   };
-		// }
+			return {
+				payment: dispatch.payment,
+				checkoutUrl: existingSession.url,
+				message: "Checkout session already exists",
+			};
+		}
 	}
 
 	const amount = Number(dispatch.ambulance.type.baseFare);

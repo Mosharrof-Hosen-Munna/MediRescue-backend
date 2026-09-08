@@ -1,4 +1,4 @@
-import { AmbulanceStatus } from "../../../generated/prisma/browser";
+import type { AmbulanceStatus } from "../../../generated/prisma/browser";
 
 export interface ICreateAmbulancePayload {
 	registrationNo: string;

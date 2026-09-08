@@ -1,5 +1,5 @@
-import { Prisma } from "../../../generated/prisma/client";
-import { ICreateAuditLogPayload } from "./auditLog.interface";
+import type { Prisma } from "../../../generated/prisma/client";
+import type { ICreateAuditLogPayload } from "./auditLog.interface";
 
 const createAuditLog = async (
 	tx: Prisma.TransactionClient,

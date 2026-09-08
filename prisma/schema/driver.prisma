@@ -5,6 +5,7 @@ model Driver {
   firstName         String
   lastName          String
   profilePhoto       String?
+  profilePhotoPublicId String?
   phone             String
   dateOfBirth       DateTime?
   gender            Gender?

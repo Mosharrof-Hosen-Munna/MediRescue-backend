@@ -5,6 +5,7 @@ model Patient {
   firstName             String
   lastName              String
   profilePhoto       String?
+  profilePhotoPublicId String?
   phone                 String?    @unique
   dateOfBirth           DateTime?
   gender                Gender?

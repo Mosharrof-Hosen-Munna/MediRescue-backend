@@ -1,5 +1,5 @@
 import { prisma } from "../../lib/prisma";
-import {
+import type {
 	ICreateServiceTypePayload,
 	IGetServiceTypesQuery,
 } from "./serviceType.interface";

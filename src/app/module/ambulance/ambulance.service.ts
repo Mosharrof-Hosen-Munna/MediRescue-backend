@@ -1,7 +1,7 @@
-import { AmbulanceStatus } from "../../../generated/prisma/enums";
+import type { AmbulanceStatus } from "../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
 import { auditLogService } from "../auditLog/auditLog.service";
-import {
+import type {
 	ICreateAmbulancePayload,
 	IGetAmbulancesQuery,
 	IUpdateAmbulancePayload,

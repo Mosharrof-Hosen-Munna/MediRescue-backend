@@ -1,13 +1,13 @@
 import { Role } from "./../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
 import {
-	ICancelEmergencyRequestPayload,
-	ICreateEmergencyRequestPayload,
+	type ICancelEmergencyRequestPayload,
+	type ICreateEmergencyRequestPayload,
 	IGetEmergencyRequestByIdParams,
-	IGetMyEmergencyRequestsQuery,
-	IUpdateEmergencyRequestPayload,
+	type IGetMyEmergencyRequestsQuery,
+	type IUpdateEmergencyRequestPayload,
 } from "./emergencyRequest.interface";
-import { IGetEmergencyRequestsQuery } from "./emergencyRequest.interface";
+import type { IGetEmergencyRequestsQuery } from "./emergencyRequest.interface";
 import { auditLogService } from "../auditLog/auditLog.service";
 
 const createEmergencyRequest = async (

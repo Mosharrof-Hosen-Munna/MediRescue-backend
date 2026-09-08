@@ -1,6 +1,6 @@
 import { prisma } from "../../lib/prisma";
 import { auditLogService } from "../auditLog/auditLog.service";
-import {
+import type {
 	ICreateAmbulanceTypePayload,
 	IGetAmbulanceTypesQuery,
 	IUpdateAmbulanceTypePayload,

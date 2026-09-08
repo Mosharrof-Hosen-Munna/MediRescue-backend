@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 import httpStatus from "http-status";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
@@ -30,7 +30,7 @@ const stripeWebhook = catchAsync(async (req: Request, res: Response) => {
 		"Webhook Secret Exists:",
 		Boolean(process.env.STRIPE_WEBHOOK_SECRET),
 	);
-	let event = req.body as Buffer;
+	const event = req.body as Buffer;
 	const signature = req.headers["stripe-signature"]!;
 
 	if (!signature) {

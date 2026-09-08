@@ -1,4 +1,4 @@
-import { EmergencyRequestStatus } from "../../../generated/prisma/enums";
+import type { EmergencyRequestStatus } from "../../../generated/prisma/enums";
 
 export interface ICreateEmergencyRequestPayload {
 	serviceTypeId: string;
